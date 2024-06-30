@@ -1,0 +1,48 @@
+# ?? ??
+server:
+  port: 8082
+
+logging:
+  level:
+    org.springframework.boot.context.properties: DEBUG
+
+# ??? ??
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/content
+    username: root
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  # JPA ??
+  jpa:
+    database: POSTGRESQL
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    # show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 10
+        highlight_sql: true
+
+  # Redis ??
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: redis # redis.conf?? ??? ????
+
+  # ??? ??
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
+      group-id: content-group
+    producer:
+      bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
+
+grpc:
+  server:
+    port: 50052  # gRPC ?? ?? ??

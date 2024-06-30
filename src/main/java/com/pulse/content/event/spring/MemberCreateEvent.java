@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentCreateEvent implements OutboxEvent {
+public class MemberCreateEvent implements OutboxEvent {
 
     private Long id;
 
     @Override
     public String getEventType() {
-        return "ContentCreatedOutboxEvent";
+        return "MemberCreatedOutboxEvent";
     }
 
 }

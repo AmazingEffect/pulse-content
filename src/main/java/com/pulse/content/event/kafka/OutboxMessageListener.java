@@ -2,7 +2,7 @@ package com.pulse.content.event.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pulse.content.event.spring.ContentCreateEvent;
+import com.pulse.content.event.spring.MemberCreateEvent;
 import com.pulse.event_library.event.OutboxEvent;
 import com.pulse.event_library.service.OutboxService;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ public class OutboxMessageListener {
 
             // JSON 데이터를 OutboxEvent로 변환한다.
             String jsonValue = record.value();
-            OutboxEvent event = objectMapper.readValue(jsonValue, ContentCreateEvent.class);
+            OutboxEvent event = objectMapper.readValue(jsonValue, MemberCreateEvent.class);
 
             // OutboxService의 markOutboxEventProcessed 메서드를 호출하여 OutboxEvent를 처리완료(PROCESSED)로 변경한다.
             outboxService.markOutboxEventProcessed(event);

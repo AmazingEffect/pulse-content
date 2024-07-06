@@ -1,12 +1,10 @@
 package com.pulse.content.config.trace.aop;
 
-import io.grpc.Metadata;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.context.propagation.TextMapSetter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class TracingAspect {
+public class TraceClientAspect {
 
     private final Tracer tracer = GlobalOpenTelemetry.getTracer("grpc-client");
 
@@ -27,7 +25,7 @@ public class TracingAspect {
      * @param id        - 회원 id
      * @param context   - OpenTelemetry Context
      */
-    @Around(value = "@annotation(com.pulse.content.config.trace.annotation.Traceable) && args(id, context)", argNames = "joinPoint,id,context")
+    @Around(value = "@annotation(com.pulse.content.config.trace.annotation.TraceClient) && args(id, context)", argNames = "joinPoint,id,context")
     public Object traceGrpcClient(ProceedingJoinPoint joinPoint, Long id, Context context) throws Throwable {
         // 1. Span 생성
         Span span = tracer.spanBuilder("grpc-call").setParent(context).startSpan();

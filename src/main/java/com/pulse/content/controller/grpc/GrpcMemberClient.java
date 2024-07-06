@@ -1,13 +1,12 @@
 package com.pulse.content.controller.grpc;
 
-import com.pulse.content.config.trace.annotation.Traceable;
-import com.pulse.content.config.trace.aop.TracingAspect;
+import com.pulse.content.config.trace.annotation.TraceClient;
+import com.pulse.content.config.trace.aop.TraceClientAspect;
 import com.pulse.member.grpc.MemberProto;
 import com.pulse.member.grpc.MemberServiceGrpc;
 import io.grpc.*;
 import io.grpc.stub.MetadataUtils;
 import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class GrpcMemberClient {
 
 
     // gRPC 서버에 연결 (생성자)
-    public GrpcMemberClient(TracingAspect tracingAspect) {
+    public GrpcMemberClient(TraceClientAspect traceClientAspect) {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();
@@ -41,7 +40,7 @@ public class GrpcMemberClient {
      *
      * @param id - 회원 id
      */
-    @Traceable
+    @TraceClient
     public MemberProto.MemberRetrieveResponse getMemberById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getMemberById(result.request());
@@ -54,8 +53,7 @@ public class GrpcMemberClient {
      * @param id      - 회원 id
      * @param context - 현재 컨텍스트
      */
-    // todo: 지금 여기서 trace 추적이 안되는중
-    @Traceable
+    @TraceClient
     public MemberProto.MemberNicknameResponse getNicknameById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getNicknameById(result.request());
@@ -68,7 +66,7 @@ public class GrpcMemberClient {
      * @param id      - 회원 id
      * @param context - 현재 컨텍스트
      */
-    @Traceable
+    @TraceClient
     public MemberProto.MemberProfileImageUrlResponse getProfileImageUrl(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getProfileImageUrlById(result.request());

@@ -110,6 +110,8 @@ public class OutboxServiceImpl implements OutboxService {
             case "MemberCreatedOutboxEvent" -> "member-created-outbox";
             case "MemberUpdatedOutboxEvent" -> "member-updated-outbox";
             case "MemberDeletedOutboxEvent" -> "member-deleted-outbox";
+            case "MemberNicknameChangeOutboxEvent" -> "member-nickname-change-outbox";
+            case "MemberProfileImageChangeOutboxEvent" -> "member-profile-image-change-outbox";
             // content
             case "ContentCreatedOutboxEvent" -> "content-created-outbox";
             case "ContentUpdatedOutboxEvent" -> "content-updated-outbox";

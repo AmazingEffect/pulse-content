@@ -1,10 +1,10 @@
-package com.pulse.content.event.kafka;
+package com.pulse.content.listener.kafka.outbox.member;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pulse.content.controller.grpc.GrpcClient;
-import com.pulse.content.event.spring.MemberCreateEvent;
+import com.pulse.content.controller.grpc.GrpcMemberClient;
+import com.pulse.content.listener.spring.event.NicknameChangeEvent;
 import com.pulse.content.util.TraceUtil;
 import com.pulse.event_library.event.OutboxEvent;
 import com.pulse.member.grpc.MemberProto;
@@ -22,13 +22,17 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+/**
+ * 닉네임이 변경되면 발행되는 kafka 메시지를 처리하는 리스너
+ * zeroPayload - gRPC 클라이언트를 통해 member 서버에 회원의 닉네임을 요청한다.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class MemberMessageListener {
+public class NicknameChangeMessageListener {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final GrpcClient grpcClient;
+    private final GrpcMemberClient grpcMemberClient;
     private final Tracer tracer = GlobalOpenTelemetry.getTracer("content-kafka-consumer");
     private final TraceUtil traceUtil;
 
@@ -36,17 +40,17 @@ public class MemberMessageListener {
      * 유저가 생성되면 이벤트를 수신하고
      * gRPC 클라이언트를 통해 member 서버에 회원 정보를 요청한다.
      *
-     * @param record
-     * @param acknowledgment
-     * @param partition
-     * @param offset
+     * @param record         - Kafka 메시지
+     * @param acknowledgment - ack 처리
+     * @param partition      - partition
+     * @param offset         - offset
      */
     @KafkaListener(
-            topics = "member-created-outbox",
-            groupId = "content-group-external",
+            topics = {"member-nickname-change-outbox"},
+            groupId = "content-group-nickname-change",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void listenExternal(
+    public void listenNicknameChange(
             ConsumerRecord<String, String> record,
             Acknowledgment acknowledgment,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
@@ -57,7 +61,7 @@ public class MemberMessageListener {
         Context extractedContext = traceUtil.extractContextFromRecord(record);
 
         // 2. 기존 Trace를 기반으로 새로운 Span을 생성
-        Span span = tracer.spanBuilder("KafkaListener Process Message - Content")
+        Span span = tracer.spanBuilder("NicknameChange message consume - Content")
                 .setParent(extractedContext)  // 기존 Trace의 Context를 부모로 설정
                 .startSpan();
 
@@ -65,10 +69,12 @@ public class MemberMessageListener {
         try (Scope scope = span.makeCurrent()) {
             // 3-1. Kafka 메시지를 OutboxEvent로 변환한다.
             String jsonValue = record.value();
-            OutboxEvent event = objectMapper.readValue(jsonValue, MemberCreateEvent.class);
+            OutboxEvent event = objectMapper.readValue(jsonValue, NicknameChangeEvent.class);
 
-            // 3-2. gRPC 클라이언트를 통해 member 서버에 회원 정보를 요청한다.
-            MemberProto.MemberResponse result = grpcClient.getMemberById(event.getId(), extractedContext);
+            // 3-2. gRPC 클라이언트를 통해 member 서버에 변경된 닉네임 정보를 요청한다.
+            MemberProto.MemberNicknameResponse result =
+                    grpcMemberClient.getNicknameById(event.getId(), extractedContext);
+
             log.info(String.valueOf(result));
         } catch (Exception e) {
             // 4. 에러 발생 시 에러를 클라이언트에게 전달

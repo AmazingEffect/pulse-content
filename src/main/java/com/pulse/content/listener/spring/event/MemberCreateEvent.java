@@ -1,4 +1,4 @@
-package com.pulse.content.event.spring;
+package com.pulse.content.listener.spring.event;
 
 import com.pulse.event_library.event.OutboxEvent;
 import lombok.AllArgsConstructor;

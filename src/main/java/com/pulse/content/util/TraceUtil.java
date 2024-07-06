@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * MSA의 분산 추적을 위해 Trace Context를 추출하는 유틸리티 클래스
+ * Jaeger를 사용하여 분산 추적을 수행하고 있으며, Kafka 메시지에서 traceparent 헤더를 추출하여 SpanContext를 생성한다.
+ */
 @Slf4j
 @Component
 public class TraceUtil {
@@ -19,8 +23,8 @@ public class TraceUtil {
     /**
      * Kafka 메시지에서 traceparent 헤더를 추출하여 기존의 Context와 연결한다.
      *
-     * @param record
-     * @return
+     * @param record Kafka 메시지
+     * @return 추출한 SpanContext를 포함한 Context
      */
     public Context extractContextFromRecord(ConsumerRecord<String, String> record) {
         String traceParent = null;

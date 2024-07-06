@@ -18,18 +18,17 @@ public class TracingAspect {
 
     private final Tracer tracer = GlobalOpenTelemetry.getTracer("grpc-client");
 
-    // gRPC 요청을 위한 TextMapSetter
-    private static final TextMapSetter<Metadata> setter =
-            (carrier, key, value) -> carrier.put(Metadata.Key.of(key, Metadata.ASCII_STRING_MARSHALLER), value);
-
     /**
      * gRPC 클라이언트 호출 시 Span을 생성하고 종료한다.
+     * args(id, context)는 AOP 포인트컷 표현식에서 지정된 메서드가 id와 context라는 매개변수를 가져야만 포인트컷이 적용된다는 것을 의미한다.
+     * 즉, 해당 어노테이션이 적용된 메서드 중에서 매개변수의 타입과 순서가 id (Long 타입), context (Context 타입)인 메서드에만 AOP 어드바이스가 적용된다.
      *
      * @param joinPoint - 프록시 대상 메서드
+     * @param id        - 회원 id
      * @param context   - OpenTelemetry Context
      */
-    @Around(value = "@annotation(com.pulse.content.config.trace.annotation.Traceable) && args(context)", argNames = "joinPoint,context")
-    public Object traceGrpcClient(ProceedingJoinPoint joinPoint, Context context) throws Throwable {
+    @Around(value = "@annotation(com.pulse.content.config.trace.annotation.Traceable) && args(id, context)", argNames = "joinPoint,id,context")
+    public Object traceGrpcClient(ProceedingJoinPoint joinPoint, Long id, Context context) throws Throwable {
         // 1. Span 생성
         Span span = tracer.spanBuilder("grpc-call").setParent(context).startSpan();
 
@@ -46,18 +45,5 @@ public class TracingAspect {
             span.end();
         }
     }
-
-    /**
-     * gRPC 요청을 위한 TextMapSetter를 생성한다.
-     *
-     * @param context - OpenTelemetry Context
-     * @return Metadata
-     */
-    public Metadata createMetadata(Context context) {
-        Metadata metadata = new Metadata();
-        GlobalOpenTelemetry.getPropagators().getTextMapPropagator().inject(context, metadata, setter);
-        return metadata;
-    }
-
 
 }

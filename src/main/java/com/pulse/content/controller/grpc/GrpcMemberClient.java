@@ -9,6 +9,7 @@ import io.grpc.stub.MetadataUtils;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.TextMapSetter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,7 +21,11 @@ import org.springframework.stereotype.Component;
 public class GrpcMemberClient {
 
     private final MemberServiceGrpc.MemberServiceBlockingStub blockingStub;
-    private final TracingAspect tracingAspect;
+
+    // gRPC 요청을 위한 TextMapSetter
+    private static final TextMapSetter<Metadata> setter =
+            (carrier, key, value) -> carrier.put(Metadata.Key.of(key, Metadata.ASCII_STRING_MARSHALLER), value);
+
 
     // gRPC 서버에 연결 (생성자)
     public GrpcMemberClient(TracingAspect tracingAspect) {
@@ -28,7 +33,6 @@ public class GrpcMemberClient {
                 .usePlaintext()
                 .build();
         blockingStub = MemberServiceGrpc.newBlockingStub(channel);
-        this.tracingAspect = tracingAspect;
     }
 
     /**
@@ -50,6 +54,7 @@ public class GrpcMemberClient {
      * @param id      - 회원 id
      * @param context - 현재 컨텍스트
      */
+    // todo: 지금 여기서 trace 추적이 안되는중
     @Traceable
     public MemberProto.MemberNicknameResponse getNicknameById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
@@ -78,8 +83,8 @@ public class GrpcMemberClient {
      * @return
      */
     private GrpcRequestResult createGrpcRequest(Long id, Context context) {
-        // 1. Metadata 생성 (aspect 내부의 createMetadata 메서드 호출)
-        Metadata metadata = tracingAspect.createMetadata(context);
+        Metadata metadata = new Metadata();
+        GlobalOpenTelemetry.getPropagators().getTextMapPropagator().inject(context, metadata, setter);
 
         // 2. gRPC 요청을 위한 MemberIdRequest 객체 생성
         MemberProto.MemberIdRequest request = MemberProto.MemberIdRequest.newBuilder()

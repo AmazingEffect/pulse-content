@@ -1,6 +1,6 @@
 package com.pulse.content.controller.grpc;
 
-import com.pulse.content.config.trace.annotation.TraceClient;
+import com.pulse.content.config.trace.annotation.TraceGrpcClient;
 import com.pulse.content.config.trace.aop.TraceClientAspect;
 import com.pulse.member.grpc.MemberProto;
 import com.pulse.member.grpc.MemberServiceGrpc;
@@ -40,7 +40,7 @@ public class GrpcMemberClient {
      *
      * @param id - 회원 id
      */
-    @TraceClient
+    @TraceGrpcClient
     public MemberProto.MemberRetrieveResponse getMemberById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getMemberById(result.request());
@@ -53,7 +53,7 @@ public class GrpcMemberClient {
      * @param id      - 회원 id
      * @param context - 현재 컨텍스트
      */
-    @TraceClient
+    @TraceGrpcClient
     public MemberProto.MemberNicknameResponse getNicknameById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getNicknameById(result.request());
@@ -66,7 +66,7 @@ public class GrpcMemberClient {
      * @param id      - 회원 id
      * @param context - 현재 컨텍스트
      */
-    @TraceClient
+    @TraceGrpcClient
     public MemberProto.MemberProfileImageUrlResponse getProfileImageUrl(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getProfileImageUrlById(result.request());

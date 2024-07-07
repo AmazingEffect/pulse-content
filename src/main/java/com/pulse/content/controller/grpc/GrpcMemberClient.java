@@ -1,7 +1,6 @@
 package com.pulse.content.controller.grpc;
 
 import com.pulse.content.config.trace.annotation.TraceGrpcClient;
-import com.pulse.content.config.trace.aop.TraceClientAspect;
 import com.pulse.member.grpc.MemberProto;
 import com.pulse.member.grpc.MemberServiceGrpc;
 import io.grpc.*;
@@ -27,7 +26,7 @@ public class GrpcMemberClient {
 
 
     // gRPC 서버에 연결 (생성자)
-    public GrpcMemberClient(TraceClientAspect traceClientAspect) {
+    public GrpcMemberClient() {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();

@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface OutboxRepository extends JpaRepository<ContentOutbox, Long> {
 
-    Optional<ContentOutbox> findByEventIdAndEventType(Long id, String eventType);
+    Optional<ContentOutbox> findByPayloadAndEventType(Long id, String eventType);
 
 }

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "com.pulse.member.grpc";
+option java_package = "com.pulse.content.grpc";
 option java_outer_classname = "MemberProto";
 
 service MemberService {

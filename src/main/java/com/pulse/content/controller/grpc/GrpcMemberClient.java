@@ -1,8 +1,8 @@
 package com.pulse.content.controller.grpc;
 
 import com.pulse.content.config.trace.annotation.TraceGrpcClient;
-import com.pulse.member.grpc.MemberProto;
-import com.pulse.member.grpc.MemberServiceGrpc;
+import com.pulse.content.grpc.MemberProto;
+import com.pulse.content.grpc.MemberServiceGrpc;
 import io.grpc.*;
 import io.grpc.stub.MetadataUtils;
 import io.opentelemetry.api.GlobalOpenTelemetry;

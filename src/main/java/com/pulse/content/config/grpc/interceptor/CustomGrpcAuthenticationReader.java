@@ -1,4 +1,4 @@
-package com.pulse.content.config.security.grpc;
+package com.pulse.content.config.grpc.interceptor;
 
 import com.pulse.content.config.jwt.JwtTokenProvider;
 import io.grpc.Metadata;

@@ -1,6 +1,6 @@
 package com.pulse.content.config.trace.aop;
 
-import com.pulse.content.config.trace.grpc.GrpcMetadata;
+import com.pulse.content.config.grpc.interceptor.GrpcMetadata;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;

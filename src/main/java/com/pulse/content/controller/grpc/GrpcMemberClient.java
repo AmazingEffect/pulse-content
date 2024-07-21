@@ -3,7 +3,11 @@ package com.pulse.content.controller.grpc;
 import com.pulse.content.config.trace.annotation.TraceGrpcClient;
 import com.pulse.content.grpc.MemberProto;
 import com.pulse.content.grpc.MemberServiceGrpc;
-import io.grpc.*;
+import io.grpc.Channel;
+import io.grpc.ClientInterceptors;
+import io.grpc.ManagedChannel;
+import io.grpc.Metadata;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.MetadataUtils;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.context.Context;
@@ -27,7 +31,7 @@ public class GrpcMemberClient {
 
     // gRPC 서버에 연결 (생성자)
     public GrpcMemberClient() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
+        ManagedChannel channel = NettyChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();
         blockingStub = MemberServiceGrpc.newBlockingStub(channel);

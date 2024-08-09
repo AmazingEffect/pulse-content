@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence;
+package com.pulse.content.adapter.out.persistence.adapter;
 
 import com.pulse.content.adapter.out.persistence.entity.ContentOutboxEntity;
 import com.pulse.content.adapter.out.persistence.repository.ContentOutboxRepository;

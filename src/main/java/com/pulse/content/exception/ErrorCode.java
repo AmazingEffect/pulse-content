@@ -20,6 +20,7 @@ public enum ErrorCode {
     // Internal errors
     INTERNAL_SERVER_ERROR("CON500", "Internal server error"),
     UNEXPECTED_ERROR("CON999", "Unexpected error"),
+    INVALID_MESSAGE_STATUS("CON1000", "Invalid message status")
     ;
 
     private final String code;

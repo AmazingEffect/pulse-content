@@ -1,6 +1,6 @@
 package com.pulse.content.exception;
 
-import com.pulse.content.controller.response.ApiResponse;
+import com.pulse.content.adapter.in.web.dto.response.api.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,15 +19,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final AppProperties appProperties;
-
     /**
      * 커스텀 예외인 ContentException을 처리하기 위해 사용됩니다.
      */
     @ExceptionHandler(ContentException.class)
     public ResponseEntity<ApiResponse<String>> handleContentException(ContentException e) {
-        String stackTrace = appProperties.isIncludeStackTrace() ? ExceptionUtils.getStackTrace(e) : null;
-        ApiResponse<String> response = ApiResponse.fail(e.getErrorCode(), stackTrace);
+        ApiResponse<String> response = ApiResponse.fail(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -37,8 +34,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
-        String stackTrace = appProperties.isIncludeStackTrace() ? ExceptionUtils.getStackTrace(e) : null;
-        ApiResponse<String> response = ApiResponse.fail(ErrorCode.UNEXPECTED_ERROR, e.getMessage(), stackTrace);
+        ApiResponse<String> response = ApiResponse.fail(ErrorCode.UNEXPECTED_ERROR, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -53,7 +49,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.toList());
-        ApiResponse<String> response = ApiResponse.fail(ErrorCode.VALIDATION_FAILED, errors, null);
+        ApiResponse<String> response = ApiResponse.fail(ErrorCode.VALIDATION_FAILED, errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

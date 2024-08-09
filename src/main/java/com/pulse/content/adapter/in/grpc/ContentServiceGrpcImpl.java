@@ -1,7 +1,6 @@
-package com.pulse.content.service.grpc;
+package com.pulse.content.adapter.in.grpc;
 
 import com.pulse.content.mapper.ContentMapper;
-import com.pulse.content.service.usecase.ContentService;
 import lombok.RequiredArgsConstructor;
 
 
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 //@GrpcService
 public class ContentServiceGrpcImpl {
 
-    private final ContentService contentService;
     private final ContentMapper memberMapper;
 
 

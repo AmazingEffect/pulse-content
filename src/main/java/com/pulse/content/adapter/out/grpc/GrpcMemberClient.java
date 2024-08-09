@@ -1,4 +1,4 @@
-package com.pulse.content.controller.grpc;
+package com.pulse.content.adapter.out.grpc;
 
 import com.pulse.content.config.trace.annotation.TraceGrpcClient;
 import com.pulse.content.grpc.MemberProto;

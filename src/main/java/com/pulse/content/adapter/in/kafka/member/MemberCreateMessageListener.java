@@ -1,10 +1,11 @@
-package com.pulse.content.adapter.in.event.member;
+package com.pulse.content.adapter.in.kafka.member;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pulse.content.adapter.out.event.NicknameChangeEvent;
+import com.pulse.content.adapter.out.event.MemberCreateEvent;
 import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.config.trace.annotation.TraceZeroPayloadKafka;
 import com.pulse.content.adapter.out.grpc.GrpcMemberClient;
 import com.pulse.content.grpc.MemberProto;
 import io.opentelemetry.context.Context;
@@ -18,13 +19,13 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 /**
- * 닉네임이 변경되면 발행되는 kafka 메시지를 처리하는 리스너
- * zeroPayload - gRPC 클라이언트를 통해 member 서버에 회원의 닉네임을 요청한다.
+ * 회원이 생성되면 이벤트를 수신하는 Kafka 리스너
+ * zeroPayload - gRPC 클라이언트를 통해 member 서버에 회원 정보를 요청한다.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class NicknameChangeMessageListener {
+public class MemberCreateMessageListener {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final GrpcMemberClient grpcMemberClient;
@@ -38,12 +39,13 @@ public class NicknameChangeMessageListener {
      * @param partition      - partition
      * @param offset         - offset
      */
+    @TraceZeroPayloadKafka
     @KafkaListener(
-            topics = {"member-nickname-change-outbox"},
-            groupId = "content-group-nickname-change",
+            topics = {"member-created-outbox"},
+            groupId = "content-group-member-create",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void listenNicknameChange(
+    public void listenMemberCreate(
             ConsumerRecord<String, String> record,
             Acknowledgment acknowledgment,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
@@ -51,11 +53,11 @@ public class NicknameChangeMessageListener {
     ) throws JsonProcessingException {
         // 1. 이벤트 객체로 변환한다.
         String jsonValue = record.value();
-        OutboxEvent event = objectMapper.readValue(jsonValue, NicknameChangeEvent.class);
+        OutboxEvent event = objectMapper.readValue(jsonValue, MemberCreateEvent.class);
 
         // 2. gRPC 요청을 보내고 응답 받기
-        MemberProto.MemberNicknameResponse result =
-                grpcMemberClient.getNicknameById(event.getPayload(), Context.current());
+        MemberProto.MemberRetrieveResponse result =
+                grpcMemberClient.getMemberById(event.getPayload(), Context.current());
         log.info(String.valueOf(result));
 
         // 3. ack 처리

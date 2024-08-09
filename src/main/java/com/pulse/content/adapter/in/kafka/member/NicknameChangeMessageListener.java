@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.in.event.member;
+package com.pulse.content.adapter.in.kafka.member;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,13 +18,13 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 /**
- * 프로필 이미지 변경 kafka 메시지를 처리하는 리스너
+ * 닉네임이 변경되면 발행되는 kafka 메시지를 처리하는 리스너
  * zeroPayload - gRPC 클라이언트를 통해 member 서버에 회원의 닉네임을 요청한다.
  */
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ProfileImageChangeMessageListener {
+public class NicknameChangeMessageListener {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final GrpcMemberClient grpcMemberClient;
@@ -39,11 +39,11 @@ public class ProfileImageChangeMessageListener {
      * @param offset         - offset
      */
     @KafkaListener(
-            topics = {"member-profile-image-change-outbox"},
-            groupId = "content-group-profile-image-change",
+            topics = {"member-nickname-change-outbox"},
+            groupId = "content-group-nickname-change",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void listenProfileImageChange(
+    public void listenNicknameChange(
             ConsumerRecord<String, String> record,
             Acknowledgment acknowledgment,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
@@ -54,8 +54,8 @@ public class ProfileImageChangeMessageListener {
         OutboxEvent event = objectMapper.readValue(jsonValue, NicknameChangeEvent.class);
 
         // 2. gRPC 요청을 보내고 응답 받기
-        MemberProto.MemberProfileImageUrlResponse result =
-                grpcMemberClient.getProfileImageUrl(event.getPayload(), Context.current());
+        MemberProto.MemberNicknameResponse result =
+                grpcMemberClient.getNicknameById(event.getPayload(), Context.current());
         log.info(String.valueOf(result));
 
         // 3. ack 처리

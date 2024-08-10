@@ -1,5 +1,6 @@
 package com.pulse.content.adapter.out.grpc;
 
+import com.pulse.content.application.port.out.grpc.GrpcMemberClientPort;
 import com.pulse.content.config.trace.annotation.TraceGrpcClient;
 import com.pulse.content.grpc.MemberProto;
 import com.pulse.content.grpc.MemberServiceGrpc;
@@ -20,22 +21,26 @@ import org.springframework.stereotype.Component;
  * 이 클래스는 애플리케이션 내에서 gRPC 서버에 요청을 보내는 역할을 합니다.
  */
 @Component
-public class GrpcMemberClient {
+public class GrpcMemberClientAdapter implements GrpcMemberClientPort {
 
+    // gRPC 서버에 연결하기 위한 blockingStub
     private final MemberServiceGrpc.MemberServiceBlockingStub blockingStub;
 
-    // gRPC 요청을 위한 TextMapSetter
-    private static final TextMapSetter<Metadata> setter =
-            (carrier, key, value) -> carrier.put(Metadata.Key.of(key, Metadata.ASCII_STRING_MARSHALLER), value);
-
-
     // gRPC 서버에 연결 (생성자)
-    public GrpcMemberClient() {
+    public GrpcMemberClientAdapter() {
+        // NettyChannelBuilder를 사용하여 gRPC 서버에 연결
         ManagedChannel channel = NettyChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();
+
+        // blockingStub 생성
         blockingStub = MemberServiceGrpc.newBlockingStub(channel);
     }
+
+    // gRPC 요청에서 사용할 Metadata를 헤더로 추가하는 TextMapSetter
+    private static final TextMapSetter<Metadata> setter =
+            (carrier, key, value) -> carrier.put(Metadata.Key.of(key, Metadata.ASCII_STRING_MARSHALLER), value);
+
 
     /**
      * id로 회원 정보 받아오기
@@ -44,6 +49,7 @@ public class GrpcMemberClient {
      * @param id - 회원 id
      */
     @TraceGrpcClient
+    @Override
     public MemberProto.MemberRetrieveResponse getMemberById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getMemberById(result.request());
@@ -57,6 +63,7 @@ public class GrpcMemberClient {
      * @param context - 현재 컨텍스트
      */
     @TraceGrpcClient
+    @Override
     public MemberProto.MemberNicknameResponse getNicknameById(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getNicknameById(result.request());
@@ -70,6 +77,7 @@ public class GrpcMemberClient {
      * @param context - 현재 컨텍스트
      */
     @TraceGrpcClient
+    @Override
     public MemberProto.MemberProfileImageUrlResponse getProfileImageUrl(Long id, Context context) {
         GrpcRequestResult result = createGrpcRequest(id, context);
         return result.stubWithHeaders().getProfileImageUrlById(result.request());
@@ -79,9 +87,9 @@ public class GrpcMemberClient {
      * Grpc Request 생성
      * Metadata를 헤더로 추가하여 요청 (traceparent 헤더 주입)
      *
-     * @param id
-     * @param context
-     * @return
+     * @param id      - 회원 id
+     * @param context - 현재 컨텍스트
+     * @return GrpcRequestResult
      */
     private GrpcRequestResult createGrpcRequest(Long id, Context context) {
         Metadata metadata = new Metadata();

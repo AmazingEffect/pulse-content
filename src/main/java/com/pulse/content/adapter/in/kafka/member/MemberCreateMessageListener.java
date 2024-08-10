@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pulse.content.adapter.out.event.MemberCreateEvent;
 import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.application.port.out.grpc.GrpcMemberClientPort;
 import com.pulse.content.config.trace.annotation.TraceZeroPayloadKafka;
-import com.pulse.content.adapter.out.grpc.GrpcMemberClient;
 import com.pulse.content.grpc.MemberProto;
 import io.opentelemetry.context.Context;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class MemberCreateMessageListener {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final GrpcMemberClient grpcMemberClient;
+    private final GrpcMemberClientPort grpcMemberClientPort;
 
     /**
      * 유저가 생성되면 이벤트를 수신하고
@@ -57,7 +57,7 @@ public class MemberCreateMessageListener {
 
         // 2. gRPC 요청을 보내고 응답 받기
         MemberProto.MemberRetrieveResponse result =
-                grpcMemberClient.getMemberById(event.getPayload(), Context.current());
+                grpcMemberClientPort.getMemberById(event.getPayload(), Context.current());
         log.info(String.valueOf(result));
 
         // 3. ack 처리

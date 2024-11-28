@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * HTTP 요청을 필터링하여 JWT 토큰을 확인하고, 유효한 토큰인 경우 사용자 인증 정보를 설정합니다.
@@ -28,6 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 특정 경로를 필터링에서 제외
+    private static final Set<String> EXCLUDE_URLS = Set.of(
+            "/actuator/info",
+            "/actuator/health",
+            "/actuator/env",
+            "/actuator/metrics"
+    );
 
     /**
      * HTTP 요청을 필터링하여 JWT 토큰을 확인하고, 유효한 토큰인 경우 사용자 인증 정보를 설정합니다.
@@ -45,10 +54,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            // HTTP 요청에서 JWT 토큰을 추출합니다.
-            String jwt = getJwtFromRequest(request);
+            String requestURI = request.getRequestURI();
+
+            // 특정 경로를 필터링에서 제외 (config에서 제외 불가능하기에 여기서 처리)
+            if (EXCLUDE_URLS.contains(requestURI)) {
+                // 엑츄에이터 엔드포인트는 인증 없이 접근 가능합니다.
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 1. JWT 토큰을 요청에서 추출
+            String jwt = parseJwt(request);
+
+            // 2. JWT 토큰이 없는 경우 예외 처리
+            if (notHasJwtToken(jwt)) {
+                throw new JwtAuthenticationException("JWT token is missing");
+            }
+
+            // 3. JWT 토큰이 유효하지 않은 경우 예외 처리
+            if (notValidJwtToken(jwt)) {
+                throw new JwtAuthenticationException("Invalid JWT token");
+            }
 
             // JWT 토큰이 유효한 경우, 사용자 인증 정보를 설정합니다.
+            // todo: 지금은 db조회를 안하고 토큰에서 꺼내서 쓰는데 db조회해서 검증 해야할지 고민..
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateJwtToken(jwt)) {
                 Authentication authentication = jwtTokenProvider.getAuthenticationFromGrpcToken(jwt);
 
@@ -68,24 +97,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     /**
-     * HTTP 요청에서 JWT 토큰을 추출합니다.
-     *
-     * @param request HTTP 요청 객체
-     * @return JWT 토큰
+     * @param request HttpServletRequest 객체
+     * @return 추출된 JWT 토큰 문자열, 없으면 null
+     * @apiNote HTTP 요청에서 JWT 토큰을 추출하는 메서드
      */
-    private String getJwtFromRequest(HttpServletRequest request) {
-        // 'Authorization' 헤더에서 JWT 토큰을 추출합니다.
+    private String parseJwt(HttpServletRequest request) {
+        // 1. Authorization 헤더에서 JWT 토큰을 추출
         String bearerToken = request.getHeader("Authorization");
 
-        // 'Bearer '로 시작하는지 확인합니다.
+        // 2. "Bearer " 접두사를 제거하고 JWT 토큰 반환
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            // 'Bearer ' 부분을 제외한 토큰을 반환합니다.
-            String substringToken = bearerToken.substring(7);
-            log.info("bearerToken : {}", substringToken);
-            return substringToken;
+            return bearerToken.substring(7);
         }
 
+        // 3. JWT 토큰이 없는 경우 null 반환
         return null;
+    }
+
+    /**
+     * @param jwt JWT 토큰 문자열
+     * @return JWT 토큰이 없는 경우 true, 있는 경우 false
+     * @apiNote JWT 토큰이 없는 경우를 확인하는 메서드
+     */
+    private boolean notHasJwtToken(String jwt) {
+        return !StringUtils.hasText(jwt);
+    }
+
+
+    /**
+     * @param jwt JWT 토큰 문자열
+     * @return JWT 토큰이 유효하지 않은 경우 true, 유효한 경우 false
+     * @apiNote JWT 토큰이 유효하지 않은 경우를 확인하는 메서드
+     */
+    private boolean notValidJwtToken(String jwt) {
+        return !jwtTokenProvider.validateJwtToken(jwt);
     }
 
 }

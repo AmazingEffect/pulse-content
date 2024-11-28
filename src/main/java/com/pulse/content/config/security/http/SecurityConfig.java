@@ -6,6 +6,7 @@ import com.pulse.content.config.security.http.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,15 +23,32 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter authJwtTokenFilter;
     private final AuthJwtEntryPoint authJwtEntryPoint;
 
-
     /**
-     * Spring Security 필터 체인 설정
-     * Http 요청에 대한 보안 필터를 설정합니다. (gRPC는 HTTP가 아닌 다른 프로토콜을 사용하므로, 이 필터가 동작하지 않습니다.)
-     *
      * @param http HttpSecurity 객체
      * @return SecurityFilterChain
      * @throws Exception 예외
+     * @apiNote Actuator 경로에 대한 보안 필터 체인 설정
      */
+    @Bean
+    @Order(1)
+    public SecurityFilterChain actuatorFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/actuator/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+
+
+    /**
+     * @param http HttpSecurity 객체
+     * @return SecurityFilterChain
+     * @throws Exception 예외
+     * @apiNote Spring Security 필터 체인 설정
+     * Http 요청에 대한 보안 필터를 설정합니다. (gRPC는 HTTP가 아닌 다른 프로토콜을 사용하므로, 이 필터가 동작하지 않습니다.)
+     */
+    @Order(2)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)                                     // CSRF 보호 비활성화

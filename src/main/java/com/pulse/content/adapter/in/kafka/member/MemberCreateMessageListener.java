@@ -3,8 +3,8 @@ package com.pulse.content.adapter.in.kafka.member;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pulse.content.adapter.out.event.MemberCreateEvent;
-import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.adapter.in.kafka.member.event.MemberCreateEvent;
+import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
 import com.pulse.content.application.port.out.grpc.GrpcMemberClientPort;
 import com.pulse.content.config.trace.annotation.TraceZeroPayloadKafka;
 import com.pulse.content.grpc.MemberProto;

@@ -1,4 +1,4 @@
-package com.pulse.content.util;
+package com.pulse.content.config.trace;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;

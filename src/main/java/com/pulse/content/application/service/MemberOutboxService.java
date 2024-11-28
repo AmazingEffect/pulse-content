@@ -1,6 +1,6 @@
 package com.pulse.content.application.service;
 
-import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
 import com.pulse.content.adapter.out.persistence.entity.constant.MessageStatus;
 import com.pulse.content.application.port.in.outbox.ContentOutboxUseCase;
 import com.pulse.content.application.port.out.CreateContentOutboxPort;

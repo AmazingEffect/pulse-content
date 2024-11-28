@@ -1,6 +1,6 @@
-package com.pulse.content.adapter.out.event;
+package com.pulse.content.adapter.in.kafka.member.event;
 
-import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

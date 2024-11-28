@@ -1,7 +1,7 @@
 package com.pulse.content.application.port.in.outbox;
 
 
-import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
 
 public interface ContentOutboxUseCase {
 

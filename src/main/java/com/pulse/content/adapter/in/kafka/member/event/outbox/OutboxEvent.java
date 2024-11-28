@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.event.outbox;
+package com.pulse.content.adapter.in.kafka.member.event.outbox;
 
 public interface OutboxEvent {
 

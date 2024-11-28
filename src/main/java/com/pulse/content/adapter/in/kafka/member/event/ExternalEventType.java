@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.event;
+package com.pulse.content.adapter.in.kafka.member.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

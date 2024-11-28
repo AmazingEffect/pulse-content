@@ -1,12 +1,14 @@
-package com.pulse.content.adapter.out.event;
+package com.pulse.content.adapter.in.kafka.member.event;
 
-import com.pulse.content.adapter.out.event.outbox.OutboxEvent;
+import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileImageChangeEvent implements OutboxEvent {
+public class NicknameChangeEvent implements OutboxEvent {
 
     private Long payload;
 
@@ -27,7 +29,7 @@ public class ProfileImageChangeEvent implements OutboxEvent {
      */
     @Override
     public String getEventType() {
-        return ExternalEventType.MEMBER_PROFILE_IMAGE_CHANGE_OUTBOX.getType();
+        return ExternalEventType.MEMBER_NICKNAME_CHANGE_OUTBOX.getType();
     }
 
 }

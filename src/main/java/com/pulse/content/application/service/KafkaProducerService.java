@@ -1,6 +1,5 @@
 package com.pulse.content.application.service;
 
-import com.pulse.content.application.port.in.kafka.KafkaProducerUseCase;
 import com.pulse.content.application.port.out.kafka.KafkaProducerPort;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
@@ -11,7 +10,6 @@ import io.opentelemetry.context.propagation.TextMapSetter;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -27,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @RequiredArgsConstructor
 @Service
-public class KafkaProducerService implements KafkaProducerUseCase {
+public class KafkaProducerService {
 
     private final KafkaProducerPort kafkaProducerPort;
     private final Tracer tracer = GlobalOpenTelemetry.getTracer("kafka-producer");
@@ -45,8 +43,11 @@ public class KafkaProducerService implements KafkaProducerUseCase {
      * @param context     전송에 사용될 컨텍스트
      * @return 전송 결과를 나타내는 CompletableFuture
      */
-    @Override
-    public CompletableFuture<SendResult<String, String>> send(String topic, String payloadJson, Context context) {
+    public CompletableFuture<SendResult<String, String>> send(
+            String topic,
+            String payloadJson,
+            Context context
+    ) {
         // 1. Span을 생성합니다. ("kafka-send"라는 이름을 가지며, 파라미터로 주어진 context를 부모로 설정합니다.)
         Span span = tracer.spanBuilder("[kafka] : member-message-produce").setParent(context).startSpan();
 
@@ -78,8 +79,12 @@ public class KafkaProducerService implements KafkaProducerUseCase {
      * @param context     전송에 사용될 컨텍스트
      * @return 전송 결과를 나타내는 CompletableFuture
      */
-    @Override
-    public CompletableFuture<SendResult<String, String>> send(String topic, String key, String payloadJson, Context context) {
+    public CompletableFuture<SendResult<String, String>> send(
+            String topic,
+            String key,
+            String payloadJson,
+            Context context
+    ) {
         Span span = tracer.spanBuilder("[kafka] : member-message-produce").setParent(context).startSpan();
 
         try (Scope scope = span.makeCurrent()) {
@@ -101,9 +106,12 @@ public class KafkaProducerService implements KafkaProducerUseCase {
      * @param topic       전송할 Kafka 토픽
      * @param payloadJson 전송할 메시지
      */
-    @Override
     @Retryable(retryFor = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
-    public void sendWithRetry(String topic, String payloadJson, Context context) {
+    public void sendWithRetry(
+            String topic,
+            String payloadJson,
+            Context context
+    ) {
         send(topic, payloadJson, context).whenComplete((result, ex) -> {
             // 실패시 예외를 던져서 처리합니다.
             if (ex != null) {
@@ -124,9 +132,13 @@ public class KafkaProducerService implements KafkaProducerUseCase {
      * @param key         메시지 키
      * @param payloadJson 전송할 메시지
      */
-    @Override
     @Retryable(retryFor = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
-    public void sendWithRetry(String topic, String key, String payloadJson, Context context) {
+    public void sendWithRetry(
+            String topic,
+            String key,
+            String payloadJson,
+            Context context
+    ) {
         send(topic, payloadJson, context).whenComplete((result, ex) -> {
             // 실패시 예외를 던져서 처리합니다.
             if (ex != null) {

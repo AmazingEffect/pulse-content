@@ -1,6 +1,6 @@
 package com.pulse.content.config.trace.aop;
 
-import com.pulse.content.util.TraceUtil;
+import com.pulse.content.config.trace.TraceUtil;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;

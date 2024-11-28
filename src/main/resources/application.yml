@@ -1,6 +1,6 @@
 # 포트 설정
 server:
-  port: 8082
+  port: 8092
 
 # JWT 설정
 jwt:
@@ -12,6 +12,11 @@ spring:
   # 애플리케이션 이름 설정
   application:
     name: content-service
+
+  # Eureka 설정
+  cloud:
+    discovery:
+      enabled: true
 
   # 데이터베이스 설정
   datasource:
@@ -49,29 +54,55 @@ spring:
     producer:
       bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
 
-# msa 로깅 설정 (jaeger)
-otel:
-  resource:
-    attributes:
-      service.name: ${spring.application.name}
-
-tracing:
-  url: http://localhost:4318/v1/traces
-
-management:
-  tracing:
-    sampling:
-      probability: 1.0
-
-logging:
-  pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+# Eureka 설정 (spring 하위에서 최상위로 이동)
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      grpcPort: ${grpc.server.port}
 
 # gRPC 서버 포트 설정
 grpc:
   server:
     port: 50052
   client:
-    member-grpc-server:  # @GrpcClient에서 사용한 이름과 일치해야 함
-      address: static://localhost:50051  # gRPC 서버 주소와 포트
-      negotiationType: plaintext  # SSL/TLS 없이 평문으로 통신할 경우
+    member-grpc-server:                    # @GrpcClient에서 사용한 이름과 일치해야 함
+      address: discovery:///member-service # gRPC 서버 주소와 포트 (유레카 서비스 이름 사용)
+      negotiationType: plaintext           # SSL/TLS 없이 평문으로 통신할 경우
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+
+# msa 로깅 설정 (jaeger)
+otel:
+  resource:
+    attributes:
+      service.name: ${spring.application.name}
+
+# Jaeger 설정
+tracing:
+  url: http://localhost:4318/v1/traces
+
+# 스프링 부트 액추에이터 설정
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    endpoint:
+      health:
+        show-details: always
+#    security:
+#      enabled: false
+
+# 로깅 패턴 설정
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'

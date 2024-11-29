@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence.adapter.kafka;
+package com.pulse.content.adapter.out.kafka;
 
 import com.pulse.content.application.port.out.kafka.KafkaProducerPort;
 import com.pulse.content.common.annotation.MessagingAdapter;

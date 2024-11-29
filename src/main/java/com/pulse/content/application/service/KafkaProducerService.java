@@ -1,6 +1,5 @@
 package com.pulse.content.application.service;
 
-import com.pulse.content.application.port.out.kafka.KafkaProducerPort;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;

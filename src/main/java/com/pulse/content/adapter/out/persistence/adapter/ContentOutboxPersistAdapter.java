@@ -4,13 +4,13 @@ import com.pulse.content.adapter.out.persistence.entity.ContentOutboxEntity;
 import com.pulse.content.adapter.out.persistence.repository.ContentOutboxRepository;
 import com.pulse.content.application.port.out.CreateContentOutboxPort;
 import com.pulse.content.application.port.out.FindContentOutboxPort;
+import com.pulse.content.common.annotation.PersistenceAdapter;
 import com.pulse.content.domain.ContentOutbox;
 import com.pulse.content.mapper.ContentOutboxMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
+@PersistenceAdapter
 public class ContentOutboxPersistAdapter implements FindContentOutboxPort, CreateContentOutboxPort {
 
     private final ContentOutboxRepository contentOutboxRepository;

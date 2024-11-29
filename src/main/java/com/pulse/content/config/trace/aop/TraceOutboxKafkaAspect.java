@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 /**
  * Kafka 리스너 동작 시 Span을 생성하고 종료하는 Aspect
  */
-@Aspect
 @Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
+@Aspect
 public class TraceOutboxKafkaAspect {
 
     private final Tracer tracer = GlobalOpenTelemetry.getTracer("kafka-consumer");
@@ -55,14 +55,14 @@ public class TraceOutboxKafkaAspect {
 
         // 3. Span을 현재 컨텍스트에 설정
         try (Scope scope = span.makeCurrent()) {
-            // 3-1. 실제 메서드 호출
+            // 실제 메서드 호출
             return joinPoint.proceed();
         } catch (Exception e) {
-            // 3-2. 예외 발생 시 Span에 기록
+            // 예외 발생 시 Span에 기록
             span.recordException(e);
             throw e;
         } finally {
-            // 4. Span 종료
+            // Span 종료
             log.info("Ending traceId: {}, spanId: {}", span.getSpanContext().getTraceId(), span.getSpanContext().getSpanId());
             span.end();
         }

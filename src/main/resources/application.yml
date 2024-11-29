@@ -13,11 +13,6 @@ spring:
   application:
     name: content-service
 
-  # Eureka 설정
-  cloud:
-    discovery:
-      enabled: true
-
   # 데이터베이스 설정
   datasource:
     url: jdbc:postgresql://localhost:5432/content
@@ -54,28 +49,14 @@ spring:
     producer:
       bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
 
-# Eureka 설정 (spring 하위에서 최상위로 이동)
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
-    metadata-map:
-      grpcPort: ${grpc.server.port}
-
 # gRPC 서버 포트 설정
 grpc:
   server:
     port: 50052
   client:
-    member-grpc-server:                    # @GrpcClient에서 사용한 이름과 일치해야 함
-      address: discovery:///member-service # gRPC 서버 주소와 포트 (유레카 서비스 이름 사용)
-      negotiationType: plaintext           # SSL/TLS 없이 평문으로 통신할 경우
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
+    member-grpc-server: # @GrpcClient에서 사용한 이름과 일치해야 함
+      address: static://localhost:50051  # gRPC 서버 주소와 포트
+      negotiationType: plaintext  # SSL/TLS 없이 평문으로 통신할 경우
 
 # msa 로깅 설정 (jaeger)
 otel:

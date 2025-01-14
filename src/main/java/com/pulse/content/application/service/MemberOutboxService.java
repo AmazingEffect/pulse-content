@@ -1,12 +1,10 @@
 package com.pulse.content.application.service;
 
 import com.pulse.content.adapter.in.kafka.member.event.outbox.OutboxEvent;
-import com.pulse.content.adapter.out.persistence.entity.constant.MessageStatus;
 import com.pulse.content.application.port.in.outbox.ContentOutboxUseCase;
 import com.pulse.content.application.port.out.CreateContentOutboxPort;
 import com.pulse.content.application.port.out.FindContentOutboxPort;
 import com.pulse.content.common.annotation.UseCase;
-import com.pulse.content.domain.ContentOutbox;
 import io.opentelemetry.api.trace.Span;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;

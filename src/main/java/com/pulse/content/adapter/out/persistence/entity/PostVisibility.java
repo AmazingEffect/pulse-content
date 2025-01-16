@@ -1,5 +1,17 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum PostVisibility {
-    OPEN, CLOSE
+    OPEN("OPEN", "공개"),
+    CLOSE("CLOSE", "비공개");
+
+    private final String code;
+    private final String description;
+
+    PostVisibility(String code, String description) {
+        this.code = code;
+        this.description = description;
+    }
 }

@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "comment")
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentEntity extends BaseEntity {
@@ -30,6 +28,17 @@ public class CommentEntity extends BaseEntity {
 
     @Column(name = "text")
     private String text;    // 게시글 내용 텍스트
+
+    // factory method
+    public static CommentEntity of(Long id, Long postId, Long memberId, String title, String text) {
+        return CommentEntity.builder()
+                .id(id)
+                .postId(postId)
+                .memberId(memberId)
+                .title(title)
+                .text(text)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {

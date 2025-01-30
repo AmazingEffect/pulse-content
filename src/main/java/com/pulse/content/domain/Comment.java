@@ -1,6 +1,8 @@
 package com.pulse.content.domain;
 
 import com.pulse.content.domain.key.CommentId;
+import com.pulse.content.domain.key.MemberId;
+import com.pulse.content.domain.key.PostId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,9 +15,9 @@ public class Comment {
 
     private CommentId id;
 
-    private Long postId;    // 게시글 id
+    private PostId postId;    // 게시글 id
 
-    private Long memberId;  // 작성자 회원 id
+    private MemberId memberId;  // 작성자 회원 id
 
     private String title;   // 게시글 내용 제목
 

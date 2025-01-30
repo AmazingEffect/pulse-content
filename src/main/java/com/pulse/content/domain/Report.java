@@ -1,6 +1,7 @@
 package com.pulse.content.domain;
 
 import com.pulse.content.adapter.out.persistence.entity.TargetType;
+import com.pulse.content.domain.key.CategoryId;
 import com.pulse.content.domain.key.ReportId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class Report {
 
     private Long memberId;          // 신고한 회원 id
 
-    private Long reportCategoryId;  // 신고 카테고리 id
+    private CategoryId reportCategoryId;  // 신고 카테고리 id
 
     private String reason;          // 신고 사유 내용
 

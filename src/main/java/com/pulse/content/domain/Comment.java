@@ -3,12 +3,10 @@ package com.pulse.content.domain;
 import com.pulse.content.domain.key.CommentId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.PostId;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Comment {
@@ -23,4 +21,14 @@ public class Comment {
 
     private String text;    // 게시글 내용 텍스트
 
+    // factory method
+    public static Comment of(CommentId id, PostId postId, MemberId memberId, String title, String text) {
+        return Comment.builder()
+                .id(id)
+                .postId(postId)
+                .memberId(memberId)
+                .title(title)
+                .text(text)
+                .build();
+    }
 }

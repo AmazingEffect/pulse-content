@@ -3,12 +3,10 @@ package com.pulse.content.domain;
 import com.pulse.content.adapter.out.persistence.entity.TargetType;
 import com.pulse.content.domain.key.CategoryId;
 import com.pulse.content.domain.key.ReportId;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Report {
@@ -25,4 +23,15 @@ public class Report {
 
     private String reason;          // 신고 사유 내용
 
+    // factory method
+    public static Report of(ReportId reportId, TargetType targetType, Long targetId, Long memberId, CategoryId reportCategoryId, String reason) {
+        return Report.builder()
+                .reportId(reportId)
+                .targetType(targetType)
+                .targetId(targetId)
+                .memberId(memberId)
+                .reportCategoryId(reportCategoryId)
+                .reason(reason)
+                .build();
+    }
 }

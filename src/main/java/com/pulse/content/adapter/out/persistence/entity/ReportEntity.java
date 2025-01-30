@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "report")
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReportEntity extends BaseEntity {
@@ -34,6 +32,18 @@ public class ReportEntity extends BaseEntity {
 
     @Column(name = "reason")
     private String reason;          // 신고 사유 내용
+
+    // factory method
+    public static ReportEntity of(Long id, TargetType targetType, Long targetId, Long memberId, Long reportCategoryId, String reason) {
+        return ReportEntity.builder()
+                .id(id)
+                .targetType(targetType)
+                .targetId(targetId)
+                .memberId(memberId)
+                .reportCategoryId(reportCategoryId)
+                .reason(reason)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {

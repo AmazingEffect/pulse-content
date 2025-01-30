@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "category")
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryEntity extends BaseEntity {
@@ -24,6 +22,15 @@ public class CategoryEntity extends BaseEntity {
 
     @Column(name = "text")
     private String text;    // 설명 내용
+
+    // factory method
+    public static CategoryEntity of(Long id, String name, String text) {
+        return CategoryEntity.builder()
+                .id(id)
+                .name(name)
+                .text(text)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {

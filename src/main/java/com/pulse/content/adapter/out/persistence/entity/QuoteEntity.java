@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "quote")
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuoteEntity extends BaseEntity {
@@ -24,6 +22,15 @@ public class QuoteEntity extends BaseEntity {
 
     @Column(name = "citing_post_id")
     private Long citingPostId;      // 인용한 게시글 id
+
+    // factory method
+    public static QuoteEntity of(Long id, Long originalPostId, Long citingPostId) {
+        return QuoteEntity.builder()
+                .id(id)
+                .originalPostId(originalPostId)
+                .citingPostId(citingPostId)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {

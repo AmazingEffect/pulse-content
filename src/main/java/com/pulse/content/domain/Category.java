@@ -1,12 +1,10 @@
 package com.pulse.content.domain;
 
 import com.pulse.content.domain.key.CategoryId;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Category {
@@ -17,4 +15,12 @@ public class Category {
 
     private String text;    // 설명 내용
 
+    // factory method
+    public static Category of(CategoryId id, String name, String text) {
+        return Category.builder()
+                .id(id)
+                .name(name)
+                .text(text)
+                .build();
+    }
 }

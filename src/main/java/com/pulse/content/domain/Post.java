@@ -24,5 +24,22 @@ public class Post {
     private String text;
     private PostStatus postStatus;
     private PostVisibility postVisibility;
+
+    // factory method
+    public static Post of(PostId postId, MemberId memberId, Long hashTagIds, Long categoryIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
+        return Post.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .hashTagIds(hashTagIds)
+                .categoryIds(categoryIds)
+                .attachId(attachId)
+                .url(url)
+                .fileId(fileId)
+                .title(title)
+                .text(text)
+                .postStatus(postStatus)
+                .postVisibility(postVisibility)
+                .build();
+    }
 }
 

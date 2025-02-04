@@ -16,4 +16,15 @@ public class Reaction {
     private Long targetId;
     private Long memberId;
     private ReactionType reactionType;
+
+    // factory method
+    public static Reaction of(ReactionId reactionId, TargetType targetType, Long targetId, Long memberId, ReactionType reactionType) {
+        return Reaction.builder()
+                .reactionId(reactionId)
+                .targetType(targetType)
+                .targetId(targetId)
+                .memberId(memberId)
+                .reactionType(reactionType)
+                .build();
+    }
 }

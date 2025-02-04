@@ -12,4 +12,14 @@ public class Member {
     private String name;
     private String nickName;
     private String profilePictureUrl;
+
+    // factory method
+    public static Member of(MemberId memberId, String name, String nickName, String profilePictureUrl) {
+        return Member.builder()
+                .memberId(memberId)
+                .name(name)
+                .nickName(nickName)
+                .profilePictureUrl(profilePictureUrl)
+                .build();
+    }
 }

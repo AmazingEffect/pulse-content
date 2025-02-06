@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "hashtag")
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HashTagEntity extends BaseEntity {
@@ -21,6 +19,14 @@ public class HashTagEntity extends BaseEntity {
 
     @Column(name = "name")
     private String name;    // 해시태그 이름
+
+    // factory method
+    public static HashTagEntity of(Long id, String name) {
+        return HashTagEntity.builder()
+                .id(id)
+                .name(name)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {

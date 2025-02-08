@@ -1,8 +1,8 @@
 package com.pulse.content.domain;
 
 
-import com.pulse.content.adapter.out.persistence.entity.ReactionType;
-import com.pulse.content.adapter.out.persistence.entity.TargetType;
+import com.pulse.content.common.enumerate.ReactionType;
+import com.pulse.content.common.enumerate.TargetType;
 import com.pulse.content.domain.key.ReactionId;
 import lombok.*;
 

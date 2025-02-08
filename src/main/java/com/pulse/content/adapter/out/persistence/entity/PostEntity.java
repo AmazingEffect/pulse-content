@@ -1,5 +1,7 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import com.pulse.content.common.enumerate.PostStatus;
+import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 

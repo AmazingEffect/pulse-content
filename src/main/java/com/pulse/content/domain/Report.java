@@ -1,6 +1,6 @@
 package com.pulse.content.domain;
 
-import com.pulse.content.adapter.out.persistence.entity.TargetType;
+import com.pulse.content.common.enumerate.TargetType;
 import com.pulse.content.domain.key.CategoryId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.ReportId;

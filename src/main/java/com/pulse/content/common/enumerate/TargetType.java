@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence.entity;
+package com.pulse.content.common.enumerate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

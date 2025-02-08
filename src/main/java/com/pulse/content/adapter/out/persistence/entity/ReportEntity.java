@@ -1,5 +1,6 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import com.pulse.content.common.enumerate.TargetType;
 import jakarta.persistence.*;
 import lombok.*;
 

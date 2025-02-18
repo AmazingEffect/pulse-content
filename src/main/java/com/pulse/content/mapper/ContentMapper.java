@@ -1,5 +1,9 @@
 package com.pulse.content.mapper;
 
+import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
+import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
+import com.pulse.content.adapter.out.persistence.entity.PostEntity;
+import com.pulse.content.domain.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -11,4 +15,11 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ContentMapper {
 
+    PostEntity domainToEntity(Post post);
+
+    Post createRequestDtoToDomain(CreateContentRequestDTO createContentRequestDto);
+
+    Post entityToDomain(PostEntity savePostEntity);
+
+    CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);
 }

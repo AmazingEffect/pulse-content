@@ -1,5 +1,8 @@
 package com.pulse.content.mapper;
 
+import com.pulse.content.adapter.in.web.dto.response.ContentResponseDTO;
+import com.pulse.content.adapter.out.persistence.entity.PostEntity;
+import com.pulse.content.domain.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,5 +13,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ContentMapper {
+    // 응답 도메인을 회원가입 응답 DTO로 변환
+    ContentResponseDTO domainToResponseDTO(Post post);
 
+    Post entityToDomain(PostEntity postEntity);
 }

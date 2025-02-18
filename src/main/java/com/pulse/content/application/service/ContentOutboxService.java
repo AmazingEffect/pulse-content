@@ -5,6 +5,8 @@ import com.pulse.content.application.port.in.outbox.ContentOutboxUseCase;
 import com.pulse.content.application.port.out.CreateContentOutboxPort;
 import com.pulse.content.application.port.out.FindContentOutboxPort;
 import com.pulse.content.common.annotation.UseCase;
+import com.pulse.content.common.enumerate.MessageStatus;
+import com.pulse.content.domain.ContentOutbox;
 import io.opentelemetry.api.trace.Span;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @UseCase
-public class MemberOutboxService implements ContentOutboxUseCase {
+public class ContentOutboxService implements ContentOutboxUseCase {
 
     private final CreateContentOutboxPort createContentOutboxPort;
     private final FindContentOutboxPort findContentOutboxPort;

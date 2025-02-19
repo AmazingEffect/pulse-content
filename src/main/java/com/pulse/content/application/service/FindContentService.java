@@ -1,26 +1,26 @@
 package com.pulse.content.application.service;
 
-import com.pulse.content.adapter.in.web.dto.response.ContentResponseDTO;
-import com.pulse.content.adapter.out.persistence.entity.PostEntity;
-import com.pulse.content.adapter.out.persistence.repository.PostRepository;
+import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.application.port.FindContentPort;
+import com.pulse.content.application.port.in.content.FindContentUseCase;
+import com.pulse.content.common.annotation.UseCase;
 import com.pulse.content.domain.Post;
 import com.pulse.content.domain.key.PostId;
 import com.pulse.content.mapper.ContentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @Transactional
 @RequiredArgsConstructor
-public class FindContentService {
+public class FindContentService implements FindContentUseCase {
 
     private final FindContentPort findContentPort;
     private final ContentMapper contentMapper;
 
-    public ContentResponseDTO findContent(PostId postId) {
-        Post post = findContentPort.findContent(postId);
-        return contentMapper.domainToResponseDTO(post);
+    @Override
+    public FindContentResponseDTO findContent(PostId postId) {
+        Post findPost = findContentPort.findContent(postId); // 행위에 대한 이름으로
+        return contentMapper.domainToResponseDTO(findPost);
     }
 }

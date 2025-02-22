@@ -2,10 +2,10 @@ package com.pulse.content.mapper;
 
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
+import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.PostEntity;
 import com.pulse.content.domain.Post;
 import org.mapstruct.IterableMapping;
-import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -38,14 +38,8 @@ public interface ContentMapper {
 
     @IterableMapping(elementTargetType = Post.class)
     Post dtoToDomain(CreateContentRequestDTO createContentRequestDto);
-  
+
     // 응답 도메인을 회원가입 응답 DTO로 변환
     FindContentResponseDTO domainToResponseDTO(Post post);
 
-
-    @Mapping(target = "postId.id", source = "postId")
-    @Mapping(target = "memberId.id", source = "memberId")
-    @Mapping(target = "attachId.id", source = "attachId")
-    @Mapping(target = "fileId.id", source = "fileId")
-    Post entityToDomain(PostEntity postEntity);
 }

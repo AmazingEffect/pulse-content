@@ -27,7 +27,12 @@ public class CreateContentService implements CreateContentsUseCase {
         // todo: 3. dto -> domain 변환
 
         // todo: 4. 게시글 저장
-        Post post = contentMapper.createRequestDtoToDomain(createContentRequestDto);
+//        Post post = contentMapper.createRequestDtoToDomain(createContentRequestDto);
+        // post 임시 생성
+        Post post = Post.of(
+                null, null, null, null, null,
+                null, null, null, null, null, null
+                );
         Post createdPost = createContentPort.create(post);
 
         // todo: 5. 첨부 파일 저장(이벤트)

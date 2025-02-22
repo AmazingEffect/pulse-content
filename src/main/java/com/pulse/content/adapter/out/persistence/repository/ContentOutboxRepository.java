@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ContentOutboxRepository extends JpaRepository<ContentOutboxEntity, Long> {
-
-    Optional<ContentOutboxEntity> findByPayloadAndEventType(Long id, String eventType);
-
+    Optional<ContentOutboxEntity> findByPayloadAndEventType(Long payload, String eventType);
 }

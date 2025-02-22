@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence.entity.constant;
+package com.pulse.content.common.enumerate;
 
 import com.pulse.content.exception.ContentException;
 import com.pulse.content.exception.ErrorCode;

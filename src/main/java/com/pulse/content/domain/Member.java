@@ -1,24 +1,25 @@
 package com.pulse.content.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.pulse.content.domain.key.MemberId;
+import lombok.*;
 
-/**
- * 회원 정보를 일부 가지는 엔티티
- */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
+    private MemberId memberId;
+    private String name;
+    private String nickName;
+    private String profilePictureUrl;
 
-    private Long id;               // PK
-    private String email;          // 이메일
-    private String name;           // 이름
-    private String nickname;       // 닉네임
-    private String profilePictureUrl; // 프로필 사진
-    private String statusMessage;  // 상태 메시지
-
+    // factory method
+    public static Member of(MemberId memberId, String name, String nickName, String profilePictureUrl) {
+        return Member.builder()
+                .memberId(memberId)
+                .name(name)
+                .nickName(nickName)
+                .profilePictureUrl(profilePictureUrl)
+                .build();
+    }
 }

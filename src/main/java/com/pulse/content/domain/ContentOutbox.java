@@ -1,20 +1,20 @@
 package com.pulse.content.domain;
 
-import com.pulse.content.adapter.out.persistence.entity.constant.MessageStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.pulse.content.common.enumerate.MessageStatus;
+import com.pulse.content.exception.ContentException;
+import com.pulse.content.exception.ErrorCode;
+import lombok.*;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 
 /**
- * 이벤트 발행 및 Kafka 메시지 송/수신을 관리하기 위한 Outbox 엔티티
+ * 이벤트 발행 및 Kafka 메시지 송/수신을 관리하기 위한 Outbox
  */
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContentOutbox {
 
     private Long id;
@@ -41,6 +41,9 @@ public class ContentOutbox {
      * @apiNote OutboxEvent의 상태를 변경
      */
     public void changeStatus(MessageStatus messageStatus) {
+        if (ObjectUtils.isEmpty(messageStatus)) {
+            throw new ContentException(ErrorCode.OUTBOX_STATUS_NOT_FOUND);
+        }
         this.status = messageStatus;
     }
 
@@ -50,6 +53,9 @@ public class ContentOutbox {
      * @apiNote OutboxEvent를 처리완료(PROCESSED)로 변경
      */
     public void changeProcessedAt(LocalDateTime now) {
+        if (ObjectUtils.isEmpty(now)) {
+            throw new ContentException(ErrorCode.OUTBOX_PROCESSED_AT_NOT_FOUND);
+        }
         this.processedAt = now;
     }
 

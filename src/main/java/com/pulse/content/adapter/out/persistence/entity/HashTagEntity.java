@@ -7,36 +7,24 @@ import java.util.Objects;
 
 @Getter
 @Entity
-@Table(name = "comment")
+@Table(name = "hashtag")
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentEntity extends BaseEntity {
+public class HashTagEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "post_id")
-    private Long postId;    // 게시글 id
-
-    @Column(name = "member_id")
-    private Long memberId;  // 작성자 회원 id
-
-    @Column(name = "title")
-    private String title;   // 게시글 내용 제목
-
-    @Column(name = "text")
-    private String text;    // 게시글 내용 텍스트
+    @Column(name = "name")
+    private String name;    // 해시태그 이름
 
     // factory method
-    public static CommentEntity of(Long id, Long postId, Long memberId, String title, String text) {
-        return CommentEntity.builder()
+    public static HashTagEntity of(Long id, String name) {
+        return HashTagEntity.builder()
                 .id(id)
-                .postId(postId)
-                .memberId(memberId)
-                .title(title)
-                .text(text)
+                .name(name)
                 .build();
     }
 
@@ -44,7 +32,7 @@ public class CommentEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommentEntity that = (CommentEntity) o;
+        HashTagEntity that = (HashTagEntity) o;
         return Objects.equals(id, that.id);
     }
 

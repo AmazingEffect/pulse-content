@@ -1,6 +1,7 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-
+import com.pulse.content.common.enumerate.ReactionType;
+import com.pulse.content.common.enumerate.TargetType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,30 +11,34 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberEntity extends BaseEntity {
+public class ReactionEntity extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reaction_id")
+    private Long reactionId;
+
+    @Enumerated(EnumType.STRING)
+    private TargetType targetType;
+
+    @Column(name = "target_id")
+    private Long targetId;
+
     @Column(name = "member_id")
     private Long memberId;
 
-    // 프로필 정보(vo)
-    @Column(name = "name")
-    private String name;
-    @Column(name = "nick_name")
-    private String nickName;
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
+    @Enumerated(EnumType.STRING)
+    private ReactionType reactionType;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MemberEntity that = (MemberEntity) o;
-        return Objects.equals(memberId, that.memberId);
+        ReactionEntity that = (ReactionEntity) o;
+        return Objects.equals(reactionId, that.reactionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(memberId);
+        return Objects.hashCode(reactionId);
     }
 }

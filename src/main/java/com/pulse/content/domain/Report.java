@@ -1,24 +1,38 @@
 package com.pulse.content.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.pulse.content.common.enumerate.TargetType;
+import com.pulse.content.domain.key.CategoryId;
+import com.pulse.content.domain.key.MemberId;
+import com.pulse.content.domain.key.ReportId;
+import lombok.*;
 
-/**
- * 신고 엔티티
- * 게시물 및 댓글에 대한 신고 정보를 저장하는 엔티티입니다.
- */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Report {
 
-    private Long id;
-    private Long reportedById;
-    private Post post;
-    private Comment comment;
-    private String reason;
+    private ReportId reportId;
 
+    private TargetType targetType;  // 신고 대상 타입(POST, COMMENT)
+
+    private MemberId targetId;          // 신고 대상 id
+
+    private MemberId memberId;          // 신고한 회원 id
+
+    private CategoryId reportCategoryId;  // 신고 카테고리 id
+
+    private String reason;          // 신고 사유 내용
+
+    // factory method
+    public static Report of(ReportId reportId, TargetType targetType, MemberId targetId, MemberId memberId, CategoryId reportCategoryId, String reason) {
+        return Report.builder()
+                .reportId(reportId)
+                .targetType(targetType)
+                .targetId(targetId)
+                .memberId(memberId)
+                .reportCategoryId(reportCategoryId)
+                .reason(reason)
+                .build();
+    }
 }

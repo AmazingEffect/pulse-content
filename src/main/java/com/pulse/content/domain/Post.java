@@ -1,31 +1,47 @@
 package com.pulse.content.domain;
 
-import com.pulse.content.adapter.out.persistence.entity.constant.Category;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.pulse.content.common.enumerate.PostStatus;
+import com.pulse.content.common.enumerate.PostVisibility;
+import com.pulse.content.domain.key.AttachId;
+import com.pulse.content.domain.key.FileId;
+import com.pulse.content.domain.key.MemberId;
+import com.pulse.content.domain.key.PostId;
+import lombok.*;
 
-import java.util.Set;
-
-/**
- * 게시글
- * Comment, PostTagMap, Location 연관 관계에서 각각 일괄 로딩(batch fetching)을 적용받아 성능을 최적화할 수 있도록 설정
- */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Post {
 
-    private Long id;
-    private Long memberId;
-    private String title;
-    private String content;
-    private String imageUrl;
-    private Category category;
-    private Set<Comment> comments;
-    private Set<PostTagMap> postTags;
-    private Set<Location> locations;
+    private PostId postId;
+    private MemberId memberId;
+    private AttachId attachId;
+    private FileId fileId;
 
+    private Long hashTagIds;
+    private Long categoryIds;
+    private String url;
+    private String title;
+    private String text;
+    private PostStatus postStatus;
+    private PostVisibility postVisibility;
+
+    // factory method
+    public static Post of(PostId postId, MemberId memberId, Long hashTagIds, Long categoryIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
+        return Post.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .hashTagIds(hashTagIds)
+                .categoryIds(categoryIds)
+                .attachId(attachId)
+                .url(url)
+                .fileId(fileId)
+                .title(title)
+                .text(text)
+                .postStatus(postStatus)
+                .postVisibility(postVisibility)
+                .build();
+    }
 }
+

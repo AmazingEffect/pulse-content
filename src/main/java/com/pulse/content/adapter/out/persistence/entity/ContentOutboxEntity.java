@@ -1,6 +1,6 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.constant.MessageStatus;
+import com.pulse.content.common.enumerate.MessageStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

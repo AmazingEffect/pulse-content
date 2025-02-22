@@ -1,56 +1,63 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.constant.Category;
+import com.pulse.content.common.enumerate.PostStatus;
+import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
+import lombok.*;
 
-import java.util.Set;
+import java.util.Objects;
 
-/**
- * 게시글
- * Comment, PostTagMap, Location 연관 관계에서 각각 일괄 로딩(batch fetching)을 적용받아 성능을 최적화할 수 있도록 설정
- */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Entity
-@Table(name = "post")
-public class PostEntity extends BaseEntity {
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PostEntity extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long postId;
 
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "title", nullable = true)
+    // 해시태그 아이디 목록
+    private Long hashTagIds;
+
+    // 카테고리 아이디 목록
+    private Long categoryIds;
+
+    // 파일 리스트(vo) --> List<Attachment>
+    @Column(name = "attach_id")
+    private Long attachId;
+    @Column(name = "url")
+    private String url;
+    @Column(name = "file_id")
+    private Long fileId;
+
+    // 콘텐츠(vo)
+    @Column(name = "title")
     private String title;
-
-    @Column(name = "content", columnDefinition = "TEXT", nullable = true)
-    private String content;
-
-    @Column(name = "image_url", nullable = true)
-    private String imageUrl;
+    @Column(name = "text")
+    private String text;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private PostStatus postStatus;
 
-    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @BatchSize(size = 30)
-    private Set<CommentEntity> commentEntities;
+    @Enumerated(EnumType.STRING)
+    private PostVisibility postVisibility;
 
-    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @BatchSize(size = 10)
-    private Set<PostTagMapEntity> postTags;
 
-    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @BatchSize(size = 10)
-    private Set<LocationEntity> locationEntities;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostEntity that = (PostEntity) o;
+        return Objects.equals(postId, that.postId);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(postId);
+    }
 }

@@ -8,19 +8,21 @@ import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.PostId;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
     private PostId postId;
     private MemberId memberId;
+    private List<Long> hashTagIds;
+    private List<Long> categoryIds;
     private AttachId attachId;
     private FileId fileId;
-
-    private Long hashTagIds;
-    private Long categoryIds;
     private String url;
     private String title;
     private String text;
@@ -28,7 +30,7 @@ public class Post {
     private PostVisibility postVisibility;
 
     // factory method
-    public static Post of(PostId postId, MemberId memberId, Long hashTagIds, Long categoryIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
+    public static Post of(PostId postId, MemberId memberId, List<Long> hashTagIds, List<Long> categoryIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
         return Post.builder()
                 .postId(postId)
                 .memberId(memberId)

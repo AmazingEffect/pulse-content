@@ -9,8 +9,8 @@ import com.pulse.content.domain.ContentOutbox;
 import com.pulse.content.mapper.ContentOutboxMapper;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @PersistenceAdapter
+@RequiredArgsConstructor
 public class ContentOutboxPersistAdapter implements FindContentOutboxPort, CreateContentOutboxPort {
 
     private final ContentOutboxRepository contentOutboxRepository;

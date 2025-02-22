@@ -1,7 +1,10 @@
 package com.pulse.content.domain.key;
 
+import lombok.Builder;
+
 import java.util.Objects;
 
+@Builder
 public record ReportId(Long id) {
 
     // custom constructor

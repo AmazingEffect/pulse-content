@@ -8,6 +8,8 @@ import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.PostId;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @Builder(access = AccessLevel.PRIVATE)
@@ -15,8 +17,8 @@ import lombok.*;
 public class CreateContentResponseDTO {
     private PostId postId;
     private MemberId memberId;
-    private Long hashTagIds;
-    private Long categoryIds;
+    private List<Long> hashTagIds;
+    private List<Long> categoryIds;
     private AttachId attachId;
     private String url;
     private FileId fileId;
@@ -24,5 +26,11 @@ public class CreateContentResponseDTO {
     private String text;
     private PostStatus postStatus;
     private PostVisibility postVisibility;
+    private HashTagResponse hashTagResponse;
+
+    public static class HashTagResponse {
+        private Long hashTagId;
+        private String name;
+    }
 
 }

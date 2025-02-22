@@ -20,6 +20,7 @@ public class CreateContentService implements CreateContentsUseCase {
     @Override
     @Transactional
     public CreateContentResponseDTO create(CreateContentRequestDTO createContentRequestDto) {
+        Post post = contentMapper.dtoToDomain(createContentRequestDto);
         // todo: 1. hashTag 저장
 
         // todo: 2. 게시글 상태(postStatus) 세팅
@@ -28,11 +29,6 @@ public class CreateContentService implements CreateContentsUseCase {
 
         // todo: 4. 게시글 저장
 //        Post post = contentMapper.createRequestDtoToDomain(createContentRequestDto);
-        // post 임시 생성
-        Post post = Post.of(
-                null, null, null, null, null,
-                null, null, null, null, null, null
-                );
         Post createdPost = createContentPort.create(post);
 
         // todo: 5. 첨부 파일 저장(이벤트)

@@ -1,8 +1,10 @@
 package com.pulse.content.mapper;
 
+import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.PostEntity;
 import com.pulse.content.domain.Post;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -18,13 +20,21 @@ public interface ContentMapper {
     @Mapping(target = "memberId", source = "memberId.id")
     @Mapping(target = "attachId", source = "attachId.id")
     @Mapping(target = "fileId", source = "fileId.id")
+    @Mapping(target = "categoryIds", ignore = true)
+    @Mapping(target = "hashTagIds", ignore = true)
     PostEntity domainToEntity(Post post);
 
     @Mapping(target = "postId.id", source = "postId")
     @Mapping(target = "memberId.id", source = "memberId")
     @Mapping(target = "attachId.id", source = "attachId")
     @Mapping(target = "fileId.id", source = "fileId")
+    @Mapping(target = "categoryIds", ignore = true)
+    @Mapping(target = "hashTagIds", ignore = true)
     Post entityToDomain(PostEntity savePostEntity);
 
     CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);
+
+    @IterableMapping(elementTargetType = Post.class)
+    Post dtoToDomain(CreateContentRequestDTO createContentRequestDto);
+
 }

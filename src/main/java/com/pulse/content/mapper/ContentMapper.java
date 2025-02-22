@@ -1,6 +1,5 @@
 package com.pulse.content.mapper;
 
-import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.PostEntity;
 import com.pulse.content.domain.Post;

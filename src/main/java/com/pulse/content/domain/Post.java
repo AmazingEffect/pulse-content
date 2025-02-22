@@ -11,17 +11,19 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Builder(access = AccessLevel.PUBLIC)
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
+
     private PostId postId;
     private MemberId memberId;
     private List<Long> hashTagIds;
     private List<Long> categoryIds;
     private AttachId attachId;
-    private String url;
     private FileId fileId;
+    private String url;
     private String title;
     private String text;
     private PostStatus postStatus;

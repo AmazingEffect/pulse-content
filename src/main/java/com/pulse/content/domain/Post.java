@@ -9,17 +9,19 @@ import com.pulse.content.domain.key.PostId;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Post {
+
     private PostId postId;
     private MemberId memberId;
+    private AttachId attachId;
+    private FileId fileId;
+
     private Long hashTagIds;
     private Long categoryIds;
-    private AttachId attachId;
     private String url;
-    private FileId fileId;
     private String title;
     private String text;
     private PostStatus postStatus;

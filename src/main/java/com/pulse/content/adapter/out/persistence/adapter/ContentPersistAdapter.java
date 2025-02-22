@@ -18,7 +18,7 @@ public class ContentPersistAdapter implements FindContentPort {
 
     @Override
     public Post findContent(PostId postId) {
-        PostEntity postEntity = postRepository.findById(postId)
+        PostEntity postEntity = postRepository.findById(postId.id())
                 .orElseThrow(() -> new IllegalArgumentException("Content not found"));
         return contentMapper.entityToDomain(postEntity);
     }

@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Getter
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostEntity extends BaseEntity{

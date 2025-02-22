@@ -20,10 +20,8 @@ public class CreateContentPersistAdapter implements CreateContentPort {
     public Post create(Post post) {
         PostEntity postEntity = contentMapper.domainToEntity(post);
 
-        PostEntity savePostEntity = postRepository.save(postEntity);
+        PostEntity cratedPostEntity = postRepository.save(postEntity);
 
-        Post savePost = contentMapper.entityToDomain(savePostEntity);
-
-        return savePost;
+        return contentMapper.entityToDomain(cratedPostEntity);
     }
 }

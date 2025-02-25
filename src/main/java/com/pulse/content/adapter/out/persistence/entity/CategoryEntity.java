@@ -29,7 +29,16 @@ public class CategoryEntity extends BaseEntity {
     private List<PostCategoryEntity> postCategories;
 
     // factory method
-    public static CategoryEntity of(Long id, String name, String text) {
+    public static CategoryEntity of(Long id, String name, String text, List<PostCategoryEntity> postCategories) {
+        return CategoryEntity.builder()
+                .id(id)
+                .name(name)
+                .text(text)
+                .postCategories(postCategories)
+                .build();
+    }
+
+    public static CategoryEntity ofEmptyPostCategories(Long id, String name, String text) {
         return CategoryEntity.builder()
                 .id(id)
                 .name(name)

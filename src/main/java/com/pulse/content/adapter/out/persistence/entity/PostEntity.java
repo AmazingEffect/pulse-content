@@ -28,7 +28,7 @@ public class PostEntity extends BaseEntity{
 
     // 카테고리 아이디 목록
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostCategoryEntity> categoryIds;
+    private List<PostCategoryEntity> postCategories;
 
     // 파일 리스트(vo) --> List<Attachment>
     @Column(name = "attach_id")
@@ -49,7 +49,6 @@ public class PostEntity extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private PostVisibility postVisibility;
-
 
     @Override
     public boolean equals(Object o) {

@@ -1,10 +1,12 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import com.pulse.content.adapter.out.persistence.entity.mapping.PostCategoryEntity;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,7 +27,8 @@ public class PostEntity extends BaseEntity{
     private Long hashTagIds;
 
     // 카테고리 아이디 목록
-    private Long categoryIds;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostCategoryEntity> categoryIds;
 
     // 파일 리스트(vo) --> List<Attachment>
     @Column(name = "attach_id")

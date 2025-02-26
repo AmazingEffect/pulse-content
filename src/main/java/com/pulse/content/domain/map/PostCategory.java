@@ -1,8 +1,8 @@
-package com.pulse.content.domain.mapping;
+package com.pulse.content.domain.map;
 
 import com.pulse.content.domain.Category;
 import com.pulse.content.domain.Post;
-import com.pulse.content.domain.mapping.key.PostCategoryId;
+import com.pulse.content.domain.key.PostCategoryId;
 import lombok.*;
 
 @Getter

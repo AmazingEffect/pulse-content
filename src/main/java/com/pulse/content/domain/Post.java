@@ -6,7 +6,7 @@ import com.pulse.content.domain.key.AttachId;
 import com.pulse.content.domain.key.FileId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.PostId;
-import com.pulse.content.domain.mapping.PostCategory;
+import com.pulse.content.domain.map.PostCategory;
 import lombok.*;
 
 import java.util.List;

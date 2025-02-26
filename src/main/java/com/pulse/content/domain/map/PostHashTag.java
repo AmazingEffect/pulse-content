@@ -1,5 +1,7 @@
-package com.pulse.content.domain;
+package com.pulse.content.domain.map;
 
+import com.pulse.content.domain.HashTag;
+import com.pulse.content.domain.Post;
 import com.pulse.content.domain.key.PostHashTagId;
 import lombok.*;
 

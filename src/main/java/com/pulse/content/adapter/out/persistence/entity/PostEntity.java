@@ -23,7 +23,7 @@ public class PostEntity extends BaseEntity{
     private Long memberId;
 
     // 해시태그 아이디 목록
-    @OneToMany(mappedBy = "hashTagEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
     private List<PostHashTagMapEntity> postHashTagMapEntities = new ArrayList<>();
 //    private List<Long> hashTagIds = new;
 

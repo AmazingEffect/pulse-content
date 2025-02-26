@@ -3,6 +3,8 @@ package com.pulse.content.adapter.out.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -20,6 +22,9 @@ public class HashTagEntity extends BaseEntity {
 
     @Column(name = "name")
     private String name;    // 해시태그 이름
+
+    @OneToMany(mappedBy = "hashTagEntity", cascade = CascadeType.ALL)
+    private List<PostHashTagMapEntity> postHashTagMapEntities = new ArrayList<>();
 
     // factory method
     public static HashTagEntity of(Long id, String name) {

@@ -3,6 +3,8 @@ package com.pulse.content.adapter.out.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Entity
 @Table(name = "postHashTagMap")
@@ -24,4 +26,17 @@ public class PostHashTagMapEntity extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtag_id")
     private HashTagEntity hashTagEntity;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostHashTagMapEntity that = (PostHashTagMapEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(postEntity, that.postEntity) && Objects.equals(hashTagEntity, that.hashTagEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, postEntity, hashTagEntity);
+    }
 }

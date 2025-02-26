@@ -1,6 +1,6 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.mapping.PostCategoryEntity;
+import com.pulse.content.adapter.out.persistence.entity.map.PostCategoryMapEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,10 +26,10 @@ public class CategoryEntity extends BaseEntity {
     private String text;    // 설명 내용
 
     @OneToMany(mappedBy = "category")
-    private List<PostCategoryEntity> postCategories;
+    private List<PostCategoryMapEntity> postCategories;
 
     // factory method
-    public static CategoryEntity of(Long id, String name, String text, List<PostCategoryEntity> postCategories) {
+    public static CategoryEntity of(Long id, String name, String text, List<PostCategoryMapEntity> postCategories) {
         return CategoryEntity.builder()
                 .id(id)
                 .name(name)

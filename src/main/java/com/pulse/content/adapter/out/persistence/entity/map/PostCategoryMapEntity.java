@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence.entity.mapping;
+package com.pulse.content.adapter.out.persistence.entity.map;
 
 import com.pulse.content.adapter.out.persistence.entity.BaseEntity;
 import com.pulse.content.adapter.out.persistence.entity.CategoryEntity;
@@ -11,10 +11,10 @@ import java.util.Objects;
 @Entity
 @Getter
 @Builder
-@Table(name = "post_category")
+@Table(name = "post_category_map")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCategoryEntity extends BaseEntity {
+public class PostCategoryMapEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +31,7 @@ public class PostCategoryEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostCategoryEntity that = (PostCategoryEntity) o;
+        PostCategoryMapEntity that = (PostCategoryMapEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(post, that.post) && Objects.equals(category, that.category);
     }
 

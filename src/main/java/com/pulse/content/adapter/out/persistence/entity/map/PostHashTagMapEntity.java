@@ -1,5 +1,8 @@
-package com.pulse.content.adapter.out.persistence.entity;
+package com.pulse.content.adapter.out.persistence.entity.map;
 
+import com.pulse.content.adapter.out.persistence.entity.BaseEntity;
+import com.pulse.content.adapter.out.persistence.entity.HashTagEntity;
+import com.pulse.content.adapter.out.persistence.entity.PostEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,11 +10,11 @@ import java.util.Objects;
 
 @Getter
 @Entity
-@Table(name = "postHashTagMap")
+@Table(name = "post_hashtag_map")
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostHashTagMapEntity extends BaseEntity{
+public class PostHashTagMapEntity extends BaseEntity {
 
     @Id
     @Column(name = "post_hashtag_map_id")

@@ -1,13 +1,10 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.mapping.PostCategoryEntity;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity

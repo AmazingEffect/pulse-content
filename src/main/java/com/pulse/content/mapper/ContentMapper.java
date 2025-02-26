@@ -22,16 +22,16 @@ public interface ContentMapper {
     @Mapping(target = "memberId", source = "memberId.id")
     @Mapping(target = "attachId", source = "attachId.id")
     @Mapping(target = "fileId", source = "fileId.id")
-    @Mapping(target = "categoryIds", ignore = true)
     @Mapping(target = "hashTagIds", ignore = true)
+    @Mapping(target = "postCategories", ignore = true)
     PostEntity domainToEntity(Post post);
 
     @Mapping(target = "postId.id", source = "postId")
     @Mapping(target = "memberId.id", source = "memberId")
     @Mapping(target = "attachId.id", source = "attachId")
     @Mapping(target = "fileId.id", source = "fileId")
-    @Mapping(target = "categoryIds", ignore = true)
     @Mapping(target = "hashTagIds", ignore = true)
+    @Mapping(target = "postCategories", ignore = true)
     Post entityToDomain(PostEntity savePostEntity);
 
     CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);

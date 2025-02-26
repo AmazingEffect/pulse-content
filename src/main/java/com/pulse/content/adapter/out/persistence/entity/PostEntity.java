@@ -27,8 +27,8 @@ public class PostEntity extends BaseEntity{
     private Long hashTagIds;
 
     // 카테고리 아이디 목록
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostCategoryEntity> postCategories;
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<PostCategoryEntity> postCategories;
 
     // 파일 리스트(vo) --> List<Attachment>
     @Column(name = "attach_id")

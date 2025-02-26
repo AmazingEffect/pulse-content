@@ -14,7 +14,7 @@ public class PostCategory {
     private Post post;
     private Category category;
 
-    public static PostCategory of(Long id, Post post, Category category) {
+    public static PostCategory of(PostCategoryId id, Post post, Category category) {
         return PostCategory.builder()
                 .id(id)
                 .post(post)

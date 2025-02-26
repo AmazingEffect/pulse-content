@@ -6,6 +6,7 @@ import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +25,9 @@ public class PostEntity extends BaseEntity{
     private Long memberId;
 
     // 해시태그 아이디 목록
-    private Long hashTagIds;
+//    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
+//    private List<PostHashTagMapEntity> postHashTagMapEntities = new ArrayList<>();
+//    private List<Long> hashTagIds = new;
 
     // 카테고리 아이디 목록
 //    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

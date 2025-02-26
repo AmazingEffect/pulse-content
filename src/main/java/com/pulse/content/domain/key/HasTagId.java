@@ -1,7 +1,10 @@
 package com.pulse.content.domain.key;
 
+import lombok.Builder;
+
 import java.util.Objects;
 
+@Builder
 public record HasTagId(Long id) {
 
     // custom constructor

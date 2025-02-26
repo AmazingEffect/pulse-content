@@ -6,32 +6,36 @@ import com.pulse.content.domain.key.AttachId;
 import com.pulse.content.domain.key.FileId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.PostId;
+import com.pulse.content.domain.mapping.PostCategory;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
+
     private PostId postId;
     private MemberId memberId;
-    private Long hashTagIds;
-    private Long categoryIds;
+    private List<Long> hashTagIds;
+    private List<PostCategory> postCategories;
     private AttachId attachId;
-    private String url;
     private FileId fileId;
+    private String url;
     private String title;
     private String text;
     private PostStatus postStatus;
     private PostVisibility postVisibility;
 
     // factory method
-    public static Post of(PostId postId, MemberId memberId, Long hashTagIds, Long categoryIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
+    public static Post of(PostId postId, MemberId memberId, List<Long> hashTagIds, List<PostCategory> postCategories, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
         return Post.builder()
                 .postId(postId)
                 .memberId(memberId)
                 .hashTagIds(hashTagIds)
-                .categoryIds(categoryIds)
+                .postCategories(postCategories)
                 .attachId(attachId)
                 .url(url)
                 .fileId(fileId)
@@ -40,6 +44,25 @@ public class Post {
                 .postStatus(postStatus)
                 .postVisibility(postVisibility)
                 .build();
+    }
+
+    public static Post ofEmptyPostCategories(PostId postId, MemberId memberId, List<Long> hashTagIds, AttachId attachId, String url, FileId fileId, String title, String text, PostStatus postStatus, PostVisibility postVisibility) {
+        return Post.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .hashTagIds(hashTagIds)
+                .attachId(attachId)
+                .url(url)
+                .fileId(fileId)
+                .title(title)
+                .text(text)
+                .postStatus(postStatus)
+                .postVisibility(postVisibility)
+                .build();
+    }
+
+    public void addPostCategories(PostCategory postCategory) {
+        this.postCategories.add(postCategory);
     }
 }
 

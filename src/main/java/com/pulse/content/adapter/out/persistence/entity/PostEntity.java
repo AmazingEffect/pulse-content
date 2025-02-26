@@ -1,5 +1,6 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import com.pulse.content.adapter.out.persistence.entity.mapping.PostCategoryEntity;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostEntity extends BaseEntity{
@@ -28,7 +30,8 @@ public class PostEntity extends BaseEntity{
 //    private List<Long> hashTagIds = new;
 
     // 카테고리 아이디 목록
-    private Long categoryIds;
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<PostCategoryEntity> postCategories;
 
     // 파일 리스트(vo) --> List<Attachment>
     @Column(name = "attach_id")
@@ -49,7 +52,6 @@ public class PostEntity extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private PostVisibility postVisibility;
-
 
     @Override
     public boolean equals(Object o) {

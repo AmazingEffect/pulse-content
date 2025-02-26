@@ -1,6 +1,5 @@
-package com.pulse.content.domain.mapping.key;
+package com.pulse.content.domain.key;
 
-import com.pulse.content.domain.key.CategoryId;
 import lombok.Builder;
 
 import java.util.Objects;

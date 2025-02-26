@@ -1,4 +1,4 @@
-package com.pulse.content.adapter.out.persistence.repository;
+package com.pulse.content.adapter.out.persistence.repository.map;
 
 import com.pulse.content.adapter.out.persistence.entity.map.PostHashTagMapEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

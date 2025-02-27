@@ -16,7 +16,8 @@ public class ReportEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "report_id")
+    private Long reportId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "target_type")
@@ -35,9 +36,8 @@ public class ReportEntity extends BaseEntity {
     private String reason;          // 신고 사유 내용
 
     // factory method
-    public static ReportEntity of(Long id, TargetType targetType, Long targetId, Long memberId, Long reportCategoryId, String reason) {
+    public static ReportEntity of(TargetType targetType, Long targetId, Long memberId, Long reportCategoryId, String reason) {
         return ReportEntity.builder()
-                .id(id)
                 .targetType(targetType)
                 .targetId(targetId)
                 .memberId(memberId)
@@ -51,11 +51,11 @@ public class ReportEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ReportEntity that = (ReportEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(reportId, that.reportId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(reportId);
     }
 }

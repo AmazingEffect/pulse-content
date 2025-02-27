@@ -17,7 +17,8 @@ public class CategoryEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "category_id")
+    private Long categoryId;
 
     @Column(name ="name")
     private String name;    // 카테고리 이름
@@ -25,22 +26,12 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "text")
     private String text;    // 설명 내용
 
-    @OneToMany(mappedBy = "category")
-    private List<PostCategoryMapEntity> postCategories;
+//    @OneToMany(mappedBy = "category")
+//    private List<PostCategoryMapEntity> postCategories;
 
     // factory method
-    public static CategoryEntity of(Long id, String name, String text, List<PostCategoryMapEntity> postCategories) {
+    public static CategoryEntity of(String name, String text) {
         return CategoryEntity.builder()
-                .id(id)
-                .name(name)
-                .text(text)
-                .postCategories(postCategories)
-                .build();
-    }
-
-    public static CategoryEntity ofEmptyPostCategories(Long id, String name, String text) {
-        return CategoryEntity.builder()
-                .id(id)
                 .name(name)
                 .text(text)
                 .build();
@@ -51,11 +42,11 @@ public class CategoryEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CategoryEntity that = (CategoryEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(categoryId, that.categoryId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(categoryId);
     }
 }

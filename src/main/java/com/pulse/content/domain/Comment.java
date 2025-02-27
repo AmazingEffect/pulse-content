@@ -6,25 +6,20 @@ import com.pulse.content.domain.key.PostId;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Comment {
 
-    private CommentId id;
-
+    private CommentId commentId;
     private PostId postId;    // 게시글 id
-
     private MemberId memberId;  // 작성자 회원 id
-
     private String title;   // 게시글 내용 제목
-
     private String text;    // 게시글 내용 텍스트
 
     // factory method
-    public static Comment of(CommentId id, PostId postId, MemberId memberId, String title, String text) {
+    public static Comment of(PostId postId, MemberId memberId, String title, String text) {
         return Comment.builder()
-                .id(id)
                 .postId(postId)
                 .memberId(memberId)
                 .title(title)

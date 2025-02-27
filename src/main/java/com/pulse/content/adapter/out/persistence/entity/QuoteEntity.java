@@ -15,7 +15,8 @@ public class QuoteEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "quote_id")
+    private Long quoteId;
 
     @Column(name = "original_post_id")
     private Long originalPostId;    // 원본 게시글 id
@@ -24,9 +25,8 @@ public class QuoteEntity extends BaseEntity {
     private Long citingPostId;      // 인용한 게시글 id
 
     // factory method
-    public static QuoteEntity of(Long id, Long originalPostId, Long citingPostId) {
+    public static QuoteEntity of(Long originalPostId, Long citingPostId) {
         return QuoteEntity.builder()
-                .id(id)
                 .originalPostId(originalPostId)
                 .citingPostId(citingPostId)
                 .build();
@@ -37,11 +37,11 @@ public class QuoteEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QuoteEntity that = (QuoteEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(quoteId, that.quoteId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(quoteId);
     }
 }

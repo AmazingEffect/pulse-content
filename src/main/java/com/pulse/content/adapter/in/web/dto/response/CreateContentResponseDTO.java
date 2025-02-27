@@ -15,6 +15,7 @@ import java.util.List;
 @Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateContentResponseDTO {
+
     private PostId postId;
     private MemberId memberId;
     private List<Long> hashTagIds;

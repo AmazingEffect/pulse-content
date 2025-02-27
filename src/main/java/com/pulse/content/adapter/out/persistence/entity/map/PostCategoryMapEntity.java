@@ -15,28 +15,39 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostCategoryMapEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "post_category_map_id")
+    private Long postCategoryMapId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private PostEntity post;
+    private PostEntity postEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    private CategoryEntity categoryEntity;
+
+
+    // factory method
+    public static PostCategoryMapEntity of(PostEntity postEntity, CategoryEntity categoryEntity) {
+        return PostCategoryMapEntity.builder()
+                .postEntity(postEntity)
+                .categoryEntity(categoryEntity)
+                .build();
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostCategoryMapEntity that = (PostCategoryMapEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(post, that.post) && Objects.equals(category, that.category);
+        return Objects.equals(postCategoryMapId, that.postCategoryMapId) && Objects.equals(postEntity, that.postEntity) && Objects.equals(categoryEntity, that.categoryEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, post, category);
+        return Objects.hash(postCategoryMapId, postEntity, categoryEntity);
     }
 }

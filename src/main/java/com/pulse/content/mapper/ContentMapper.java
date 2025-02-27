@@ -9,6 +9,7 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
 /**
  * componentModel="spring"을 통해서 spring container에 Bean으로 등록 해 준다. (외부에서 주입받아서 사용하면 된다.)
@@ -17,21 +18,18 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ContentMapper {
+    ContentMapper INSTANCE = Mappers.getMapper(ContentMapper.class);
 
     @Mapping(target = "postId", source = "postId.id")
     @Mapping(target = "memberId", source = "memberId.id")
     @Mapping(target = "attachId", source = "attachId.id")
     @Mapping(target = "fileId", source = "fileId.id")
-    @Mapping(target = "hashTagIds", ignore = true)
-    @Mapping(target = "postCategories", ignore = true)
     PostEntity domainToEntity(Post post);
 
     @Mapping(target = "postId.id", source = "postId")
     @Mapping(target = "memberId.id", source = "memberId")
     @Mapping(target = "attachId.id", source = "attachId")
     @Mapping(target = "fileId.id", source = "fileId")
-    @Mapping(target = "hashTagIds", ignore = true)
-    @Mapping(target = "postCategories", ignore = true)
     Post entityToDomain(PostEntity savePostEntity);
 
     CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);

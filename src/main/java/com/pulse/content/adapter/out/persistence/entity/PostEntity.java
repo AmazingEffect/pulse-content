@@ -1,15 +1,19 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
+import com.pulse.content.adapter.out.persistence.entity.vo.ContentDetailEntity;
+import com.pulse.content.adapter.out.persistence.entity.vo.PostAttachmentEntity;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.common.enumerate.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Getter
-@Builder
+@Table(name = "post")
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostEntity extends BaseEntity{
@@ -21,28 +25,14 @@ public class PostEntity extends BaseEntity{
     @Column(name = "member_id")
     private Long memberId;
 
-    // 해시태그 아이디 목록
-//    @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
-//    private List<PostHashTagMapEntity> postHashTagMapEntities = new ArrayList<>();
-//    private List<Long> hashTagIds = new;
-
-    // 카테고리 아이디 목록
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PostCategoryEntity> postCategories;
-
     // 파일 리스트(vo) --> List<Attachment>
-    @Column(name = "attach_id")
-    private Long attachId;
-    @Column(name = "url")
-    private String url;
-    @Column(name = "file_id")
-    private Long fileId;
+    @ElementCollection
+    @CollectionTable(name = "post_attachment", joinColumns = @JoinColumn(name = "post_id"))
+    private List<PostAttachmentEntity> postAttachmentEntities;
 
     // 콘텐츠(vo)
-    @Column(name = "title")
-    private String title;
-    @Column(name = "text")
-    private String text;
+    @Embedded
+    private ContentDetailEntity contentDetailEntity;
 
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;

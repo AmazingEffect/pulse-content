@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class CreateContentPersistAdapter implements CreateContentPort {
+
     private final PostRepository postRepository;
     private final ContentMapper contentMapper;
 

@@ -14,6 +14,7 @@ import java.util.List;
 @Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateContentRequestDTO {
+
     private MemberId memberId;                  // 작성자 id
     private List<String> hashTagNames;          // hashTag 목록
     private List<Long> categoryIds;             // 카테고리 Id 목록

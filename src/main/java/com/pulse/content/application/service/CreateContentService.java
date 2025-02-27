@@ -17,8 +17,8 @@ public class CreateContentService implements CreateContentsUseCase {
     private final CreateContentPort createContentPort;
     private final ContentMapper contentMapper;
 
-    @Override
     @Transactional
+    @Override
     public CreateContentResponseDTO create(CreateContentRequestDTO createContentRequestDto) {
         Post post = contentMapper.dtoToDomain(createContentRequestDto);
         // todo: 1. hashTag 저장

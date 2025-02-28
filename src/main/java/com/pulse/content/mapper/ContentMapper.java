@@ -5,59 +5,33 @@ import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.PostEntity;
 import com.pulse.content.domain.Post;
+import com.pulse.content.mapper.helper.ContentMapperHelper;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-import org.springframework.util.ObjectUtils;
-
-import java.util.stream.Collectors;
-
 /**
  * componentModel="spring"을 통해서 spring container에 Bean으로 등록 해 준다. (외부에서 주입받아서 사용하면 된다.)
  * unmappedTargetPolicy IGNORE 만약, target class에 매핑되지 않는 필드가 있으면, null로 넣게 되고, 따로 report하지 않는다.
  */
 @Mapper(componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {ContentMapperHelper.class}
+)
 public interface ContentMapper {
 
     ContentMapper INSTANCE = Mappers.getMapper(ContentMapper.class);
 
     @Mapping(target = "postId", source = "postId.id")
     @Mapping(target = "memberId", source = "memberId.id")
+    @Mapping(target = "postAttachmentEntities", source = "postAttachments", qualifiedByName = "postAttachmentsDomainToEntity")
+    @Mapping(target = "title", source = "contentDetail.title")
+    @Mapping(target = "text", source = "contentDetail.text")
     PostEntity domainToEntity(Post post);
-
-    @AfterMapping
-    default void domainToEntity(Post domain, @MappingTarget PostEntity.PostEntityBuilder builder) {
-        if (!ObjectUtils.isEmpty(domain.getPostAttachments())) {
-            builder.postAttachmentEntities(
-                    domain.getPostAttachments().stream()
-                            .map(PostAttachmentMapper.INSTANCE::domainToEntity)
-                            .collect(Collectors.toList())
-            );
-        }
-
-        if (!ObjectUtils.isEmpty(domain.getContentDetail())) {
-            builder.contentDetailEntity(ContentDetailMapper.INSTANCE.domainToEntity(domain.getContentDetail()));
-        }
-    }
 
     @Mapping(target = "postId.id", source = "postId")
     @Mapping(target = "memberId.id", source = "memberId")
-    Post entityToDomain(PostEntity savePostEntity);
-
-    @AfterMapping
-    default void entityToDomain(PostEntity entity, @MappingTarget Post.PostBuilder builder) {
-        if (!ObjectUtils.isEmpty(entity.getPostAttachmentEntities())) {
-            builder.postAttachments(
-                    entity.getPostAttachmentEntities().stream()
-                            .map(PostAttachmentMapper.INSTANCE::entityToDomain)
-                            .collect(Collectors.toList())
-            );
-        }
-
-        if (!ObjectUtils.isEmpty(entity.getContentDetailEntity())) {
-            builder.contentDetail(ContentDetailMapper.INSTANCE.entityToDomain(entity.getContentDetailEntity()));
-        }
-    }
+    @Mapping(target = "postAttachments", source = "postAttachmentEntities", qualifiedByName = "postAttachmentsEntityToDomain")
+    @Mapping(target = "contentDetail", expression = "java(contentMapperHelper.contentDetailEntityToDomain(entity.getTitle(), entity.getText()))")
+    Post entityToDomain(PostEntity entity);
 
     CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);
 

@@ -7,6 +7,7 @@ import com.pulse.content.domain.Category;
 import com.pulse.content.domain.Post;
 import com.pulse.content.domain.map.PostCategoryMap;
 import org.mapstruct.*;
+import org.springframework.util.ObjectUtils;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -17,10 +18,10 @@ public interface PostCategoryMapper {
 
     @AfterMapping
     default void mapDomainToEntity(PostCategoryMap domain, @MappingTarget PostCategoryMapEntity.PostCategoryMapEntityBuilder builder) {
-        if (domain.getPost() != null) {
+        if (!ObjectUtils.isEmpty(domain.getPost())) {
             builder.postEntity(ContentMapper.INSTANCE.domainToEntity(domain.getPost()));
         }
-        if (domain.getCategory() != null) {
+        if (!ObjectUtils.isEmpty(domain.getCategory())) {
             // category 변환
         }
     }
@@ -30,10 +31,10 @@ public interface PostCategoryMapper {
 
     @AfterMapping
     default void mapEntityToDomain(PostCategoryMapEntity entity, @MappingTarget PostCategoryMap.PostCategoryMapBuilder builder) {
-        if (entity.getPostEntity() != null) {
+        if (!ObjectUtils.isEmpty(entity.getPostEntity())) {
             builder.post(ContentMapper.INSTANCE.entityToDomain(entity.getPostEntity()));
         }
-        if (entity.getCategoryEntity() != null) {
+        if (!ObjectUtils.isEmpty(entity.getCategoryEntity())) {
             // category 변환
         }
     }

@@ -1,6 +1,5 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.vo.ContentDetailEntity;
 import com.pulse.content.adapter.out.persistence.entity.vo.PostAttachmentEntity;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.common.enumerate.PostVisibility;
@@ -31,8 +30,11 @@ public class PostEntity extends BaseEntity{
     private List<PostAttachmentEntity> postAttachmentEntities;
 
     // 콘텐츠(vo)
-    @Embedded
-    private ContentDetailEntity contentDetailEntity;
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "text")
+    private String text;
 
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;

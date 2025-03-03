@@ -1,4 +1,4 @@
-package com.pulse.content.application.port;
+package com.pulse.content.application.port.out.content;
 
 import com.pulse.content.domain.Post;
 import com.pulse.content.domain.key.PostId;

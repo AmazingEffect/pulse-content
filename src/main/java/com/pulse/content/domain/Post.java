@@ -39,5 +39,13 @@ public class Post {
                 .postVisibility(postVisibility)
                 .build();
     }
+
+    /**
+     * PostStatus(게시글 상태) 변경
+     * @param postStatus - 변경할 게시글 상태
+     */
+    public void changePostStatus(PostStatus postStatus) {
+        this.postStatus = postStatus;
+    }
 }
 

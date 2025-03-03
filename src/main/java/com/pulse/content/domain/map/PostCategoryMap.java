@@ -6,7 +6,7 @@ import com.pulse.content.domain.key.PostCategoryMapId;
 import lombok.*;
 
 @Getter
-@Builder
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostCategoryMap {

@@ -36,7 +36,7 @@ public interface ContentMapper {
     CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);
 
     @IterableMapping(elementTargetType = Post.class)
-    Post dtoToDomain(CreateContentRequestDTO createContentRequestDto);
+    Post createRequestDtoToDomain(CreateContentRequestDTO createContentRequestDto);
 
     // 응답 도메인을 회원가입 응답 DTO로 변환
     FindContentResponseDTO domainToResponseDTO(Post post);

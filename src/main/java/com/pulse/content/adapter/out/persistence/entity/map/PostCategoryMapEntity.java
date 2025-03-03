@@ -10,8 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Getter
-@Builder
 @Table(name = "post_category_map")
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostCategoryMapEntity extends BaseEntity {

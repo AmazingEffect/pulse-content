@@ -1,7 +1,7 @@
 package com.pulse.content.application.service;
 
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
-import com.pulse.content.application.port.FindContentPort;
+import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.common.annotation.UseCase;
 import com.pulse.content.domain.Post;

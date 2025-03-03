@@ -4,7 +4,7 @@ import com.pulse.content.domain.key.CategoryId;
 import lombok.*;
 
 @Getter
-@Builder
+@Builder(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Category {

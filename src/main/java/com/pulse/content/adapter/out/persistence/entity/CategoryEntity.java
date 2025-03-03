@@ -1,16 +1,14 @@
 package com.pulse.content.adapter.out.persistence.entity;
 
-import com.pulse.content.adapter.out.persistence.entity.map.PostCategoryMapEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Entity
 @Table(name = "category")
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CategoryEntity extends BaseEntity {

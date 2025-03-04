@@ -3,6 +3,7 @@ package com.pulse.content.adapter.out.persistence.adapter;
 import com.pulse.content.adapter.out.persistence.entity.HashTagEntity;
 import com.pulse.content.adapter.out.persistence.repository.HashTagRepository;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
+import com.pulse.content.application.port.out.HashTag.FindHashTagPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
 import com.pulse.content.domain.HashTag;
 import com.pulse.content.mapper.HashTagMapper;
@@ -10,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class HashTagPersistAdapter implements CreateHashTagPort {
+public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort {
 
     private final HashTagRepository hashTagRepository;
     private final HashTagMapper hashTagMapper;
@@ -26,5 +27,17 @@ public class HashTagPersistAdapter implements CreateHashTagPort {
         HashTagEntity createdHashTagEntity = hashTagRepository.save(hashTagEntity);
 
         return hashTagMapper.entityToDomain(createdHashTagEntity);
+    }
+
+    /**
+     * 해시태그명으로 해시태그 조회
+     * @param name - 조회할 해시태그명
+     * @return 조회된 해시태그
+     */
+    @Override
+    public HashTag findByName(String name) {
+        HashTagEntity hashTagEntity = hashTagRepository.findByName(name);
+
+        return hashTagMapper.entityToDomain(hashTagEntity);
     }
 }

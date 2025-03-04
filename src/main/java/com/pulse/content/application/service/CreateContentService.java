@@ -4,13 +4,17 @@ import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.application.port.in.category.FindCategoryUseCase;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
+import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
 import com.pulse.content.application.port.out.content.CreateContentPort;
 import com.pulse.content.application.port.out.map.CreatePostCategoryMapPort;
+import com.pulse.content.application.port.out.map.CreatePostHashTagMapPort;
 import com.pulse.content.common.annotation.UseCase;
 import com.pulse.content.common.enumerate.PostStatus;
 import com.pulse.content.domain.Category;
+import com.pulse.content.domain.HashTag;
 import com.pulse.content.domain.Post;
 import com.pulse.content.domain.map.PostCategoryMap;
+import com.pulse.content.domain.map.PostHashTagMap;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +29,9 @@ public class CreateContentService implements CreateContentsUseCase {
     private final ContentMapper contentMapper;
 
     private final CreateContentPort createContentPort;
+    private final CreateHashTagPort createHashTagPort;
     private final CreatePostCategoryMapPort createPostCategoryMapPort;
+    private final CreatePostHashTagMapPort createPostHashTagMapPort;
 
     private final FindCategoryUseCase findCategoryUseCase;
 
@@ -46,8 +52,18 @@ public class CreateContentService implements CreateContentsUseCase {
         Post createdPost = createContentPort.create(post);
 
         // todo: 해시태그
-        // 해시태그 저장
-        // 해시태그 맵 저장
+        List<String> hashTagNames = createContentRequestDto.getHashTagNames();
+
+        hashTagNames.forEach(hashTagName -> {
+            // 해시태그 저장
+            HashTag hashTag = HashTag.of(hashTagName);
+            createHashTagPort.create(hashTag);
+
+            // 해시태그 맵 저장
+            PostHashTagMap postHashTagMap = PostHashTagMap.of(post, hashTag);
+            createPostHashTagMapPort.create(postHashTagMap);
+        });
+
 
         // todo: 카테고리
         List<Long> categoryIds = createContentRequestDto.getCategoryIds();

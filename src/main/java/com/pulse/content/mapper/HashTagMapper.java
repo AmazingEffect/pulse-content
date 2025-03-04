@@ -10,9 +10,9 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface HashTagMapper {
 
-    @Mapping(target = "hasTagId", source = "hasTagId.id")
+    @Mapping(target = "hashTagId", source = "hashTagId.id")
     HashTagEntity domainToEntity(HashTag hashTag);
 
-    @Mapping(target = "hasTagId.id", source = "hasTagId")
+    @Mapping(target = "hashTagId.id", source = "hashTagId")
     HashTag entityToDomain(HashTagEntity hashTagEntity);
 }

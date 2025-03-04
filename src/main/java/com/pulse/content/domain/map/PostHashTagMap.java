@@ -6,11 +6,11 @@ import com.pulse.content.domain.key.PostHashTagMapId;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostHashTagMap {
-    private PostHashTagMapId id;
+    private PostHashTagMapId postHashTagMapId;
     private Post post;
     private HashTag hashTag;
 

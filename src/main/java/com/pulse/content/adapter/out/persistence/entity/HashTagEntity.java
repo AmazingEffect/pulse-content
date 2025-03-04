@@ -8,7 +8,7 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(name = "hashtag")
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HashTagEntity extends BaseEntity {
@@ -16,7 +16,7 @@ public class HashTagEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hashtag_id")
-    private Long hashtagId;
+    private Long hashTagId;
 
     @Column(name = "name")
     private String name;    // 해시태그 이름
@@ -36,11 +36,11 @@ public class HashTagEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         HashTagEntity that = (HashTagEntity) o;
-        return Objects.equals(hashtagId, that.hashtagId);
+        return Objects.equals(hashTagId, that.hashTagId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hashtagId);
+        return Objects.hash(hashTagId);
     }
 }

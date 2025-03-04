@@ -9,6 +9,8 @@ import com.pulse.content.domain.HashTag;
 import com.pulse.content.mapper.HashTagMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort {
@@ -36,8 +38,7 @@ public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort
      */
     @Override
     public HashTag findByName(String name) {
-        HashTagEntity hashTagEntity = hashTagRepository.findByName(name);
-
-        return hashTagMapper.entityToDomain(hashTagEntity);
+        Optional<HashTagEntity> hashTagEntity = hashTagRepository.findByName(name);
+        return hashTagEntity.map(hashTagMapper::entityToDomain).orElse(null);
     }
 }

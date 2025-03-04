@@ -19,7 +19,7 @@ public class PostHashTagMapEntity extends BaseEntity {
     @Id
     @Column(name = "post_hashtag_map_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postHashTagMapId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -35,11 +35,11 @@ public class PostHashTagMapEntity extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PostHashTagMapEntity that = (PostHashTagMapEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(postEntity, that.postEntity) && Objects.equals(hashTagEntity, that.hashTagEntity);
+        return Objects.equals(postHashTagMapId, that.postHashTagMapId) && Objects.equals(postEntity, that.postEntity) && Objects.equals(hashTagEntity, that.hashTagEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, postEntity, hashTagEntity);
+        return Objects.hash(postHashTagMapId, postEntity, hashTagEntity);
     }
 }

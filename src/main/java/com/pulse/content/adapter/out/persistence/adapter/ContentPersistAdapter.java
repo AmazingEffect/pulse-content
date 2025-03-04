@@ -11,9 +11,12 @@ import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @PersistenceAdapter
 public class ContentPersistAdapter implements CreateContentPort, FindContentPort {
+
     private final ContentRepository contentRepository;
     private final ContentMapper contentMapper;
 
@@ -33,9 +36,7 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
 
     @Override
     public Content findContent(ContentId contentId) {
-        ContentEntity contentEntity = contentRepository.findById(contentId.id())
-                .orElseThrow(() -> new IllegalArgumentException("Content not found"));
-        return contentMapper.entityToDomain(contentEntity);
+        Optional<ContentEntity> contentEntity = contentRepository.findById(contentId.id());
+        return contentEntity.map(contentMapper::entityToDomain).orElse(null);
     }
-
 }

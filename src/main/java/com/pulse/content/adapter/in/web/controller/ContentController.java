@@ -19,7 +19,7 @@ public class ContentController {
     private final CreateContentsUseCase createContentsUseCase;
     private final FindContentUseCase findContentUseCase;
 
-    @GetMapping("/find/content/{contentId}")
+    @GetMapping("/find/contents/{contentId}")
     public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable ContentId contentId) {
         FindContentResponseDTO content = findContentUseCase.findContent(contentId);
         return ResponseEntity.ok(ApiResponse.success(content));

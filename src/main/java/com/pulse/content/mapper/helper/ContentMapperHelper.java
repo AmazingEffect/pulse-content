@@ -1,5 +1,6 @@
 package com.pulse.content.mapper.helper;
 
+import com.pulse.content.adapter.in.web.dto.FileDTO;
 import com.pulse.content.adapter.out.persistence.entity.vo.ContentAttachmentEntity;
 import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
@@ -50,5 +51,17 @@ public class ContentMapperHelper {
     @Named("contentDetailEntityToDomain")
     public ContentDetail contentDetailEntityToDomain(String title, String text) {
         return ContentDetail.of(title, text);
+    }
+
+    @Named("contentAttachmentsDtoToDomain")
+    public List<ContentAttachment> contentAttachmentsDtoToDomain(List<FileDTO> files) {
+        return files.stream()
+                .map(fileDTO -> {
+                    return ContentAttachment.of(
+                            fileDTO.getAttachId(), fileDTO.getUrl(), fileDTO.getFileId(),
+                            fileDTO.getContentType(), fileDTO.getSize(), fileDTO.getAttachmentType()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

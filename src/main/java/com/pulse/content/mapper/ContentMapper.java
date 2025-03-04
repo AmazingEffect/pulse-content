@@ -34,6 +34,7 @@ public interface ContentMapper {
     CreateContentResponseDTO domainToCreateResponseDTO(Content saveContent);
 
     @IterableMapping(elementTargetType = Content.class)
+    @Mapping(target = "contentAttachments", source = "files", qualifiedByName = "contentAttachmentsDtoToDomain")
     Content createRequestDtoToDomain(CreateContentRequestDTO createContentRequestDto);
 
     // 응답 도메인을 회원가입 응답 DTO로 변환

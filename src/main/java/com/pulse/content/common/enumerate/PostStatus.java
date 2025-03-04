@@ -1,6 +1,5 @@
 package com.pulse.content.common.enumerate;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

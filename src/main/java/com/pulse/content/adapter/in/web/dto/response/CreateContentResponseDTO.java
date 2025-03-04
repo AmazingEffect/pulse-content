@@ -11,9 +11,9 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@Builder(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateContentResponseDTO {
 
     private PostId postId;

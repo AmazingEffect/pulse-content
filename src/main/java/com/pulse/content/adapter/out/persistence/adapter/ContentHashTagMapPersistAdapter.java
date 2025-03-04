@@ -8,6 +8,9 @@ import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentHashTagMapMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapPort {
@@ -26,5 +29,23 @@ public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapP
         ContentHashTagMapEntity createdContentHashTagMapEntity = contentHashTagMapRepository.save(contentHashTagMapEntity);
 
         return contentHashTagMapMapper.entityToDomain(createdContentHashTagMapEntity);
+    }
+
+    /**
+     * ContentHashTag 목록 저장
+     * @param contentHashTagMaps - 저장할 ContentHashTag 목록
+     * @return 저장된 contentHashTagMaps 목록
+     */
+    @Override
+    public List<ContentHashTagMap> createAll(List<ContentHashTagMap> contentHashTagMaps) {
+        List<ContentHashTagMapEntity> contentHashTagMapEntities = contentHashTagMaps.stream()
+                .map(contentHashTagMapMapper::domainToEntity)
+                .toList();
+
+        List<ContentHashTagMapEntity> createdContentHashTagMapEntities = contentHashTagMapRepository.saveAll(contentHashTagMapEntities);
+
+        return createdContentHashTagMapEntities.stream()
+                .map(contentHashTagMapMapper::entityToDomain)
+                .collect(Collectors.toList());
     }
 }

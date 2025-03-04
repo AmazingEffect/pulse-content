@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UseCase
 @RequiredArgsConstructor
@@ -62,31 +63,32 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // todo: 해시태그
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
 
-        hashTagNames.forEach(hashTagName -> {
-            // 해시태그 조회
-            HashTag hashTag = findHashTagPort.findByName(hashTagName);
+        // 이미 저장된 해시태그 목록
+        List<HashTag> existingHashTags = findHashTagPort.findByNames(hashTagNames);
+        // 새로 저장할 해시태그 목록(저장 되어 있지 않은 해시태그명)
+        List<HashTag> newHashTags = hashTagNames.stream()
+                .filter(name -> existingHashTags.stream().noneMatch(hashTag -> hashTag.getName().equals(name)))
+                .map(HashTag::of).collect(Collectors.toList());
+        // 해시태그 목록 저장
+        List<HashTag> createdHashTags = createHashTagPort.createAll(newHashTags);
+        existingHashTags.addAll(createdHashTags);
 
-            // 존재하지 않을 경우 해시태그 저장
-            if (ObjectUtils.isEmpty(hashTag)) {
-                hashTag = HashTag.of(hashTagName);
-                createHashTagPort.create(hashTag);
-            }
-
-            // 해시태그 맵 저장
-            ContentHashTagMap contentHashTagMap = ContentHashTagMap.of(content, hashTag);
-            createContentHashTagMapPort.create(contentHashTagMap);
-        });
+        // 해시태그 맵 저장
+        List<ContentHashTagMap> contentHashTagMaps = existingHashTags.stream()
+                .map(hashTag -> ContentHashTagMap.of(content, hashTag))
+                .toList();
+        createContentHashTagMapPort.createAll(contentHashTagMaps);
 
 
         // todo: 카테고리
         List<Long> categoryIds = createContentRequestDto.getCategoryIds();
         // 카테고리 조회
         List<Category> categories = findCategoryPort.findCategoriesByIds(categoryIds);
-        categories.forEach(category -> {
-            // ContentCategoryMap 저장
-            ContentCategoryMap contentCategoryMap = ContentCategoryMap.of(createdContent, category);
-            createContentCategoryMapPort.create(contentCategoryMap);
-        });
+        // 카테고리 맵 저장
+        List<ContentCategoryMap> contentCategoryMaps = categories.stream()
+                .map(category -> ContentCategoryMap.of(content, category))
+                .toList();
+        createContentCategoryMapPort.createAll(contentCategoryMaps);
 
         return contentMapper.domainToCreateResponseDTO(createdContent);
     }

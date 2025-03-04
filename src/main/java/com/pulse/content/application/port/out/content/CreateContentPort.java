@@ -1,7 +1,7 @@
 package com.pulse.content.application.port.out.content;
 
-import com.pulse.content.domain.Post;
+import com.pulse.content.domain.Content;
 
 public interface CreateContentPort {
-    Post create(Post post);
+    Content create(Content content);
 }

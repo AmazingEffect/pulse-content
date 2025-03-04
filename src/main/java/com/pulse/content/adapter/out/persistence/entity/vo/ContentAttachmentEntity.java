@@ -11,7 +11,7 @@ import java.util.Objects;
 @Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostAttachmentEntity {
+public class ContentAttachmentEntity {
 
     @Column(name = "attach_id")
     private Long attachId;
@@ -35,11 +35,11 @@ public class PostAttachmentEntity {
 
 
     // factory method
-    public static PostAttachmentEntity of(
+    public static ContentAttachmentEntity of(
             Long attachId, String url, Long fileId, String contentType,
             Long size, AttachmentType attachmentType
     ) {
-        return PostAttachmentEntity.builder()
+        return ContentAttachmentEntity.builder()
                 .attachId(attachId)
                 .url(url)
                 .fileId(fileId)
@@ -53,7 +53,7 @@ public class PostAttachmentEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostAttachmentEntity that = (PostAttachmentEntity) o;
+        ContentAttachmentEntity that = (ContentAttachmentEntity) o;
         return Objects.equals(attachId, that.attachId) && Objects.equals(url, that.url) && Objects.equals(fileId, that.fileId) && Objects.equals(contentType, that.contentType) && Objects.equals(size, that.size) && attachmentType == that.attachmentType;
     }
 

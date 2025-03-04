@@ -1,12 +1,9 @@
 package com.pulse.content.adapter.in.web.dto.request;
 
-import com.pulse.content.common.enumerate.PostStatus;
-import com.pulse.content.common.enumerate.PostVisibility;
-import com.pulse.content.domain.key.AttachId;
+import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.key.MemberId;
 import lombok.*;
 
-import java.io.File;
 import java.util.List;
 
 @Getter
@@ -21,5 +18,5 @@ public class CreateContentRequestDTO {
     private List<Long> attachIds;               // 첨부 파일 Id
     private String title;                       // 게시글 제목
     private String text;                        // 게시글 내용
-    private PostVisibility postVisibility;      // 공개 범위
+    private ContentVisibility contentVisibility;      // 공개 범위
 }

@@ -3,8 +3,8 @@ package com.pulse.content.mapper;
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
-import com.pulse.content.adapter.out.persistence.entity.PostEntity;
-import com.pulse.content.domain.Post;
+import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
+import com.pulse.content.domain.Content;
 import com.pulse.content.mapper.helper.ContentMapperHelper;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -18,27 +18,25 @@ import org.mapstruct.factory.Mappers;
 )
 public interface ContentMapper {
 
-    ContentMapper INSTANCE = Mappers.getMapper(ContentMapper.class);
-
-    @Mapping(target = "postId", source = "postId.id")
+    @Mapping(target = "contentId", source = "contentId.id")
     @Mapping(target = "memberId", source = "memberId.id")
-    @Mapping(target = "postAttachmentEntities", source = "postAttachments", qualifiedByName = "postAttachmentsDomainToEntity")
+    @Mapping(target = "contentAttachmentEntities", source = "contentAttachments", qualifiedByName = "contentAttachmentsDomainToEntity")
     @Mapping(target = "title", source = "contentDetail.title")
     @Mapping(target = "text", source = "contentDetail.text")
-    PostEntity domainToEntity(Post post);
+    ContentEntity domainToEntity(Content content);
 
-    @Mapping(target = "postId.id", source = "postId")
+    @Mapping(target = "contentId.id", source = "contentId")
     @Mapping(target = "memberId.id", source = "memberId")
-    @Mapping(target = "postAttachments", source = "postAttachmentEntities", qualifiedByName = "postAttachmentsEntityToDomain")
+    @Mapping(target = "contentAttachments", source = "contentAttachmentEntities", qualifiedByName = "contentAttachmentsEntityToDomain")
     @Mapping(target = "contentDetail", expression = "java(contentMapperHelper.contentDetailEntityToDomain(entity.getTitle(), entity.getText()))")
-    Post entityToDomain(PostEntity entity);
+    Content entityToDomain(ContentEntity entity);
 
-    CreateContentResponseDTO domainToCreateResponseDTO(Post savePost);
+    CreateContentResponseDTO domainToCreateResponseDTO(Content saveContent);
 
-    @IterableMapping(elementTargetType = Post.class)
-    Post createRequestDtoToDomain(CreateContentRequestDTO createContentRequestDto);
+    @IterableMapping(elementTargetType = Content.class)
+    Content createRequestDtoToDomain(CreateContentRequestDTO createContentRequestDto);
 
     // 응답 도메인을 회원가입 응답 DTO로 변환
-    FindContentResponseDTO domainToResponseDTO(Post post);
+    FindContentResponseDTO domainToResponseDTO(Content content);
 
 }

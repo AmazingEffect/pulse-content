@@ -21,9 +21,6 @@ public class HashTagEntity extends BaseEntity {
     @Column(name = "name")
     private String name;    // 해시태그 이름
 
-//    @OneToMany(mappedBy = "hashTagEntity", cascade = CascadeType.ALL)
-//    private List<PostHashTagMapEntity> postHashTagMapEntities = new ArrayList<>();
-
     // factory method
     public static HashTagEntity of(String name) {
         return HashTagEntity.builder()

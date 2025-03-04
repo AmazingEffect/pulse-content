@@ -1,13 +1,12 @@
 package com.pulse.content.mapper.helper;
 
-import com.pulse.content.adapter.out.persistence.entity.vo.PostAttachmentEntity;
+import com.pulse.content.adapter.out.persistence.entity.vo.ContentAttachmentEntity;
+import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
-import com.pulse.content.domain.vo.PostAttachment;
-import com.pulse.content.mapper.PostAttachmentMapper;
+import com.pulse.content.mapper.ContentAttachmentMapper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,29 +15,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContentMapperHelper {
 
-    private final PostAttachmentMapper postAttachmentMapper;
+    private final ContentAttachmentMapper contentAttachmentMapper;
 
     /**
      * 첨부 파일 도메인 객체를 엔티티 객체로 변환
-     * @param postAttachments - 첨부 파일 도메인 목록
+     * @param contentAttachments - 첨부 파일 도메인 목록
      * @return 첨부 파일 엔티티 목록
      */
-    @Named("postAttachmentsDomainToEntity")
-    public List<PostAttachmentEntity> postAttachmentsDomainToEntity(List<PostAttachment> postAttachments) {
-        return postAttachments.stream()
-                .map(postAttachmentMapper::domainToEntity)
+    @Named("contentAttachmentsDomainToEntity")
+    public List<ContentAttachmentEntity> contentAttachmentsDomainToEntity(List<ContentAttachment> contentAttachments) {
+        return contentAttachments.stream()
+                .map(contentAttachmentMapper::domainToEntity)
                 .collect(Collectors.toList());
     }
 
     /**
      * 첨부 파일 엔티티 객체를 도메인 객체로 변환
-     * @param postAttachmentEntities - 첨부 파일  엔티티 목록
+     * @param contentAttachmentEntities - 첨부 파일  엔티티 목록
      * @return 첨부 파일 도메인 목록
      */
-    @Named("postAttachmentsEntityToDomain")
-    public List<PostAttachment> postAttachmentsEntityToDomain(List<PostAttachmentEntity> postAttachmentEntities) {
-        return postAttachmentEntities.stream()
-                .map(postAttachmentMapper::entityToDomain)
+    @Named("contentAttachmentsEntityToDomain")
+    public List<ContentAttachment> contentAttachmentsEntityToDomain(List<ContentAttachmentEntity> contentAttachmentEntities) {
+        return contentAttachmentEntities.stream()
+                .map(contentAttachmentMapper::entityToDomain)
                 .collect(Collectors.toList());
     }
 

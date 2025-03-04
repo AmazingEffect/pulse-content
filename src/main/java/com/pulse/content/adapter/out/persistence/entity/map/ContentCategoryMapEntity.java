@@ -2,7 +2,7 @@ package com.pulse.content.adapter.out.persistence.entity.map;
 
 import com.pulse.content.adapter.out.persistence.entity.BaseEntity;
 import com.pulse.content.adapter.out.persistence.entity.CategoryEntity;
-import com.pulse.content.adapter.out.persistence.entity.PostEntity;
+import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,20 +10,20 @@ import java.util.Objects;
 
 @Entity
 @Getter
-@Table(name = "post_category_map")
+@Table(name = "content_category_map")
 @Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCategoryMapEntity extends BaseEntity {
+public class ContentCategoryMapEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_category_map_id")
-    private Long postCategoryMapId;
+    @Column(name = "content_category_map_id")
+    private Long contentCategoryMapId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private PostEntity postEntity;
+    @JoinColumn(name = "content_id")
+    private ContentEntity contentEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -31,9 +31,9 @@ public class PostCategoryMapEntity extends BaseEntity {
 
 
     // factory method
-    public static PostCategoryMapEntity of(PostEntity postEntity, CategoryEntity categoryEntity) {
-        return PostCategoryMapEntity.builder()
-                .postEntity(postEntity)
+    public static ContentCategoryMapEntity of(ContentEntity contentEntity, CategoryEntity categoryEntity) {
+        return ContentCategoryMapEntity.builder()
+                .contentEntity(contentEntity)
                 .categoryEntity(categoryEntity)
                 .build();
     }
@@ -42,12 +42,12 @@ public class PostCategoryMapEntity extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostCategoryMapEntity that = (PostCategoryMapEntity) o;
-        return Objects.equals(postCategoryMapId, that.postCategoryMapId) && Objects.equals(postEntity, that.postEntity) && Objects.equals(categoryEntity, that.categoryEntity);
+        ContentCategoryMapEntity that = (ContentCategoryMapEntity) o;
+        return Objects.equals(contentCategoryMapId, that.contentCategoryMapId) && Objects.equals(contentEntity, that.contentEntity) && Objects.equals(categoryEntity, that.categoryEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postCategoryMapId, postEntity, categoryEntity);
+        return Objects.hash(contentCategoryMapId, contentEntity, categoryEntity);
     }
 }

@@ -18,17 +18,17 @@ public class QuoteEntity extends BaseEntity {
     @Column(name = "quote_id")
     private Long quoteId;
 
-    @Column(name = "original_post_id")
-    private Long originalPostId;    // 원본 게시글 id
+    @Column(name = "original_content_id")
+    private Long originalContentId;    // 원본 게시글 id
 
-    @Column(name = "citing_post_id")
-    private Long citingPostId;      // 인용한 게시글 id
+    @Column(name = "citing_content_id")
+    private Long citingContentId;      // 인용한 게시글 id
 
     // factory method
-    public static QuoteEntity of(Long originalPostId, Long citingPostId) {
+    public static QuoteEntity of(Long originalContentId, Long citingContentId) {
         return QuoteEntity.builder()
-                .originalPostId(originalPostId)
-                .citingPostId(citingPostId)
+                .originalContentId(originalContentId)
+                .citingContentId(citingContentId)
                 .build();
     }
 

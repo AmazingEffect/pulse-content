@@ -1,8 +1,8 @@
 package com.pulse.content.application.port.out.content;
 
-import com.pulse.content.domain.Post;
-import com.pulse.content.domain.key.PostId;
+import com.pulse.content.domain.Content;
+import com.pulse.content.domain.key.ContentId;
 
 public interface FindContentPort {
-    Post findContent(PostId postId);
+    Content findContent(ContentId contentId);
 }

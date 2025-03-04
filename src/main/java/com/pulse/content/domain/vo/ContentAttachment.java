@@ -9,7 +9,7 @@ import lombok.*;
 @Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostAttachment {
+public class ContentAttachment {
 
     private AttachId attachId;
     private String url;
@@ -20,11 +20,11 @@ public class PostAttachment {
 
 
     // factory method
-    public static PostAttachment of(
+    public static ContentAttachment of(
             AttachId attachId, String url, FileId fileId, String contentType,
             Long size, AttachmentType attachmentType
     ) {
-        return PostAttachment.builder()
+        return ContentAttachment.builder()
                 .attachId(attachId)
                 .url(url)
                 .fileId(fileId)

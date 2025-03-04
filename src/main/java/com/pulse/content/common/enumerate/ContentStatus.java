@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostStatus {
+public enum ContentStatus {
 
     DRAFT("DRAFT", "임시 저장"),       // 임시 저장 상태
     PUBLISHED("PUBLISHED", "게시"),   // 게시가 완료된 상태

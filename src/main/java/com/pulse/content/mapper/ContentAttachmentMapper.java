@@ -1,23 +1,20 @@
 package com.pulse.content.mapper;
 
-import com.pulse.content.adapter.out.persistence.entity.vo.PostAttachmentEntity;
-import com.pulse.content.domain.vo.PostAttachment;
+import com.pulse.content.adapter.out.persistence.entity.vo.ContentAttachmentEntity;
+import com.pulse.content.domain.vo.ContentAttachment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface PostAttachmentMapper {
-
-    PostAttachmentMapper INSTANCE = Mappers.getMapper(PostAttachmentMapper.class);
+public interface ContentAttachmentMapper {
 
     @Mapping(target = "attachId", source = "attachId.id")
     @Mapping(target = "fileId", source = "fileId.id")
-    PostAttachmentEntity domainToEntity(PostAttachment postAttachment);
+    ContentAttachmentEntity domainToEntity(ContentAttachment contentAttachment);
 
     @Mapping(target = "attachId.id", source = "attachId")
     @Mapping(target = "fileId.id", source = "fileId")
-    PostAttachment entityToDomain(PostAttachmentEntity postAttachmentEntity);
+    ContentAttachment entityToDomain(ContentAttachmentEntity contentAttachmentEntity);
 }

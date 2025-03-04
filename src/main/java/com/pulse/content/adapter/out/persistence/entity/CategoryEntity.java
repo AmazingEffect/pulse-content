@@ -24,9 +24,6 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "text")
     private String text;    // 설명 내용
 
-//    @OneToMany(mappedBy = "category")
-//    private List<PostCategoryMapEntity> postCategories;
-
     // factory method
     public static CategoryEntity of(String name, String text) {
         return CategoryEntity.builder()

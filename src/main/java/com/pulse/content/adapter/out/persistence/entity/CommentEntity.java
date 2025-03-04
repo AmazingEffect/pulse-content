@@ -18,8 +18,8 @@ public class CommentEntity extends BaseEntity {
     @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(name = "post_id")
-    private Long postId;    // 게시글 id
+    @Column(name = "content_id")
+    private Long contentId;    // 게시글 id
 
     @Column(name = "member_id")
     private Long memberId;  // 작성자 회원 id
@@ -31,9 +31,9 @@ public class CommentEntity extends BaseEntity {
     private String text;    // 게시글 내용 텍스트
 
     // factory method
-    public static CommentEntity of(Long postId, Long memberId, String title, String text) {
+    public static CommentEntity of(Long contentId, Long memberId, String title, String text) {
         return CommentEntity.builder()
-                .postId(postId)
+                .contentId(contentId)
                 .memberId(memberId)
                 .title(title)
                 .text(text)

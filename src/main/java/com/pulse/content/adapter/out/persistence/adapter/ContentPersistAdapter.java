@@ -1,41 +1,41 @@
 package com.pulse.content.adapter.out.persistence.adapter;
 
 
-import com.pulse.content.adapter.out.persistence.entity.PostEntity;
-import com.pulse.content.adapter.out.persistence.repository.PostRepository;
+import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
+import com.pulse.content.adapter.out.persistence.repository.ContentRepository;
 import com.pulse.content.application.port.out.content.CreateContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
-import com.pulse.content.domain.Post;
-import com.pulse.content.domain.key.PostId;
+import com.pulse.content.domain.Content;
+import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @PersistenceAdapter
 public class ContentPersistAdapter implements CreateContentPort, FindContentPort {
-    private final PostRepository postRepository;
+    private final ContentRepository contentRepository;
     private final ContentMapper contentMapper;
 
     /**
      * 게시글 저장
-     * @param post - 저장할 게시글 정보
+     * @param content - 저장할 게시글 정보
      * @return 저장된 게시글
      */
     @Override
-    public Post create(Post post) {
-        PostEntity postEntity = contentMapper.domainToEntity(post);
+    public Content create(Content content) {
+        ContentEntity contentEntity = contentMapper.domainToEntity(content);
 
-        PostEntity cratedPostEntity = postRepository.save(postEntity);
+        ContentEntity cratedContentEntity = contentRepository.save(contentEntity);
 
-        return contentMapper.entityToDomain(cratedPostEntity);
+        return contentMapper.entityToDomain(cratedContentEntity);
     }
 
     @Override
-    public Post findContent(PostId postId) {
-        PostEntity postEntity = postRepository.findById(postId.id())
+    public Content findContent(ContentId contentId) {
+        ContentEntity contentEntity = contentRepository.findById(contentId.id())
                 .orElseThrow(() -> new IllegalArgumentException("Content not found"));
-        return contentMapper.entityToDomain(postEntity);
+        return contentMapper.entityToDomain(contentEntity);
     }
 
 }

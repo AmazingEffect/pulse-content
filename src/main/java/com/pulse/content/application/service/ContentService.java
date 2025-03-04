@@ -10,16 +10,16 @@ import com.pulse.content.application.port.in.hashTag.FindHashTagUseCase;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
 import com.pulse.content.application.port.out.content.CreateContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
-import com.pulse.content.application.port.out.map.CreatePostCategoryMapPort;
-import com.pulse.content.application.port.out.map.CreatePostHashTagMapPort;
+import com.pulse.content.application.port.out.map.CreateContentCategoryMapPort;
+import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
 import com.pulse.content.common.annotation.UseCase;
-import com.pulse.content.common.enumerate.PostStatus;
+import com.pulse.content.common.enumerate.ContentStatus;
 import com.pulse.content.domain.Category;
+import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
-import com.pulse.content.domain.Post;
-import com.pulse.content.domain.key.PostId;
-import com.pulse.content.domain.map.PostCategoryMap;
-import com.pulse.content.domain.map.PostHashTagMap;
+import com.pulse.content.domain.key.ContentId;
+import com.pulse.content.domain.map.ContentCategoryMap;
+import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +36,8 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     private final CreateContentPort createContentPort;
     private final CreateHashTagPort createHashTagPort;
-    private final CreatePostCategoryMapPort createPostCategoryMapPort;
-    private final CreatePostHashTagMapPort createPostHashTagMapPort;
+    private final CreateContentCategoryMapPort createContentCategoryMapPort;
+    private final CreateContentHashTagMapPort createContentHashTagMapPort;
 
     private final FindContentPort findContentPort;
     private final FindCategoryUseCase findCategoryUseCase;
@@ -53,11 +53,11 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     @Override
     public CreateContentResponseDTO create(CreateContentRequestDTO createContentRequestDto) {
         // todo: 게시글
-        Post post = contentMapper.createRequestDtoToDomain(createContentRequestDto);
-        // 게시글 상태(postStatus) 세팅
-        post.changePostStatus(PostStatus.PUBLISHED);
+        Content content = contentMapper.createRequestDtoToDomain(createContentRequestDto);
+        // 게시글 상태(ContentStatus) 세팅
+        content.changeContentStatus(ContentStatus.PUBLISHED);
         // 게시글 저장
-        Post createdPost = createContentPort.create(post);
+        Content createdContent = createContentPort.create(content);
 
         // todo: 해시태그
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
@@ -73,8 +73,8 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
             }
 
             // 해시태그 맵 저장
-            PostHashTagMap postHashTagMap = PostHashTagMap.of(post, hashTag);
-            createPostHashTagMapPort.create(postHashTagMap);
+            ContentHashTagMap contentHashTagMap = ContentHashTagMap.of(content, hashTag);
+            createContentHashTagMapPort.create(contentHashTagMap);
         });
 
 
@@ -83,17 +83,17 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 카테고리 조회
         List<Category> categories = findCategoryUseCase.findCategoriesByIds(categoryIds);
         categories.forEach(category -> {
-            // PostCategoryMap 저장
-            PostCategoryMap postCategoryMap = PostCategoryMap.of(createdPost, category);
-            createPostCategoryMapPort.create(postCategoryMap);
+            // ContentCategoryMap 저장
+            ContentCategoryMap contentCategoryMap = ContentCategoryMap.of(createdContent, category);
+            createContentCategoryMapPort.create(contentCategoryMap);
         });
 
-        return contentMapper.domainToCreateResponseDTO(createdPost);
+        return contentMapper.domainToCreateResponseDTO(createdContent);
     }
 
     @Override
-    public FindContentResponseDTO findContent(PostId postId) {
-        Post findPost = findContentPort.findContent(postId); // 행위에 대한 이름으로
-        return contentMapper.domainToResponseDTO(findPost);
+    public FindContentResponseDTO findContent(ContentId contentId) {
+        Content findContent = findContentPort.findContent(contentId); // 행위에 대한 이름으로
+        return contentMapper.domainToResponseDTO(findContent);
     }
 }

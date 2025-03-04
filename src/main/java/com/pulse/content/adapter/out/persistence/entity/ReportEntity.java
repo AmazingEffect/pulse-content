@@ -21,7 +21,7 @@ public class ReportEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "target_type")
-    private TargetType targetType;  // 신고 대상 타입(POST, COMMENT)
+    private TargetType targetType;  // 신고 대상 타입(CONTENT, COMMENT)
 
     @Column(name = "target_id")
     private Long targetId;          // 신고 대상 id

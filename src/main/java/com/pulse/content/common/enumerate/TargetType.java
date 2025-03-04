@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum TargetType {
 
-    Post("POST", "게시글"),
+    CONTENT("CONTENT", "게시글"),
     COMMENT("COMMENT", "댓글");
 
     private String code;

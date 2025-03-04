@@ -6,7 +6,7 @@ import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.api.ApiResponse;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
-import com.pulse.content.domain.key.PostId;
+import com.pulse.content.domain.key.ContentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +19,9 @@ public class ContentController {
     private final CreateContentsUseCase createContentsUseCase;
     private final FindContentUseCase findContentUseCase;
 
-    @GetMapping("/find/content/{postId}")
-    public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable PostId postId) {
-        FindContentResponseDTO content = findContentUseCase.findContent(postId);
+    @GetMapping("/find/content/{contentId}")
+    public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable ContentId contentId) {
+        FindContentResponseDTO content = findContentUseCase.findContent(contentId);
         return ResponseEntity.ok(ApiResponse.success(content));
     }
 

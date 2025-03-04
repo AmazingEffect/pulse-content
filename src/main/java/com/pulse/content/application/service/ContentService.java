@@ -3,11 +3,11 @@ package com.pulse.content.application.service;
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
-import com.pulse.content.application.port.in.category.FindCategoryUseCase;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
-import com.pulse.content.application.port.in.hashTag.FindHashTagUseCase;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
+import com.pulse.content.application.port.out.HashTag.FindHashTagPort;
+import com.pulse.content.application.port.out.category.FindCategoryPort;
 import com.pulse.content.application.port.out.content.CreateContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.out.map.CreateContentCategoryMapPort;
@@ -40,8 +40,8 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     private final CreateContentHashTagMapPort createContentHashTagMapPort;
 
     private final FindContentPort findContentPort;
-    private final FindCategoryUseCase findCategoryUseCase;
-    private final FindHashTagUseCase findHashTagUseCase;
+    private final FindCategoryPort findCategoryPort;
+    private final FindHashTagPort findHashTagPort;
 
     /**
      * @apiNote 게시글 작성 및 관련 데이터 저장
@@ -64,7 +64,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
         hashTagNames.forEach(hashTagName -> {
             // 해시태그 조회
-            HashTag hashTag = findHashTagUseCase.findByName(hashTagName);
+            HashTag hashTag = findHashTagPort.findByName(hashTagName);
 
             // 존재하지 않을 경우 해시태그 저장
             if (ObjectUtils.isEmpty(hashTag)) {
@@ -81,7 +81,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // todo: 카테고리
         List<Long> categoryIds = createContentRequestDto.getCategoryIds();
         // 카테고리 조회
-        List<Category> categories = findCategoryUseCase.findCategoriesByIds(categoryIds);
+        List<Category> categories = findCategoryPort.findCategoriesByIds(categoryIds);
         categories.forEach(category -> {
             // ContentCategoryMap 저장
             ContentCategoryMap contentCategoryMap = ContentCategoryMap.of(createdContent, category);

@@ -2,12 +2,13 @@ package com.pulse.content.mapper;
 
 import com.pulse.content.adapter.out.persistence.entity.map.ContentCategoryMapEntity;
 import com.pulse.content.domain.map.ContentCategoryMap;
-import com.pulse.content.mapper.helper.ContentCategoryMapperHelper;
+import com.pulse.content.mapper.helper.CategoryMapperHelper;
+import com.pulse.content.mapper.helper.ContentMapperHelper;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = {ContentCategoryMapperHelper.class}
+        uses = {CategoryMapperHelper.class, ContentMapperHelper.class}
 )
 public interface ContentCategoryMapper {
 

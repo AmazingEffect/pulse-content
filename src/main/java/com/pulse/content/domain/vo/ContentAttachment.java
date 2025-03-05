@@ -1,7 +1,9 @@
 package com.pulse.content.domain.vo;
 
 import com.pulse.content.common.enumerate.AttachmentType;
+import com.pulse.content.domain.Content;
 import com.pulse.content.domain.key.AttachId;
+import com.pulse.content.domain.key.ContentAttachmentId;
 import com.pulse.content.domain.key.FileId;
 import lombok.*;
 
@@ -11,12 +13,14 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContentAttachment {
 
+    private ContentAttachmentId contentAttachmentId;
     private AttachId attachId;
     private String url;
     private FileId fileId;
     private String contentType;             // MIME
     private Long size;
     private AttachmentType attachmentType;  // 첨부 파일 분류
+    private Content content;
 
 
     // factory method

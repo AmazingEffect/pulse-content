@@ -23,7 +23,6 @@ import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     /**
      * @apiNote 게시글 작성 및 관련 데이터 저장
      * -> hashtag, hashtag-map, category-map
-     * @param createContentRequestDto
+     * @param createContentRequestDto - 저장할 콘텐츠 정보
      * @return
      */
     @Transactional

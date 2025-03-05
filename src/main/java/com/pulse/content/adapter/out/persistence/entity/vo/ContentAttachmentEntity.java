@@ -1,5 +1,6 @@
 package com.pulse.content.adapter.out.persistence.entity.vo;
 
+import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import com.pulse.content.common.enumerate.AttachmentType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,11 +8,17 @@ import lombok.*;
 import java.util.Objects;
 
 @Getter
-@Embeddable
+@Entity
+@Table(name = "content_attachment")
 @Builder(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContentAttachmentEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "content_attachment_id")
+    private Long contentAttachmentId;
 
     @Column(name = "attach_id")
     private Long attachId;
@@ -32,7 +39,9 @@ public class ContentAttachmentEntity {
     @Column(name = "attachment_type")
     private AttachmentType attachmentType;        // 첨부 파일 분류
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id")
+    private ContentEntity contentEntity;
 
     // factory method
     public static ContentAttachmentEntity of(
@@ -54,11 +63,11 @@ public class ContentAttachmentEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContentAttachmentEntity that = (ContentAttachmentEntity) o;
-        return Objects.equals(attachId, that.attachId) && Objects.equals(url, that.url) && Objects.equals(fileId, that.fileId) && Objects.equals(contentType, that.contentType) && Objects.equals(size, that.size) && attachmentType == that.attachmentType;
+        return Objects.equals(contentAttachmentId, that.contentAttachmentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attachId, url, fileId, contentType, size, attachmentType);
+        return Objects.hash(contentAttachmentId);
     }
 }

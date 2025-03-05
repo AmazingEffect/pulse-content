@@ -20,14 +20,12 @@ public interface ContentMapper {
 
     @Mapping(target = "contentId", source = "contentId.id")
     @Mapping(target = "memberId", source = "memberId.id")
-    @Mapping(target = "contentAttachmentEntities", source = "contentAttachments", qualifiedByName = "contentAttachmentsDomainToEntity")
     @Mapping(target = "title", source = "contentDetail.title")
     @Mapping(target = "text", source = "contentDetail.text")
     ContentEntity domainToEntity(Content content);
 
     @Mapping(target = "contentId.id", source = "contentId")
     @Mapping(target = "memberId.id", source = "memberId")
-    @Mapping(target = "contentAttachments", source = "contentAttachmentEntities", qualifiedByName = "contentAttachmentsEntityToDomain")
     @Mapping(target = "contentDetail", expression = "java(contentMapperHelper.contentDetailEntityToDomain(entity.getTitle(), entity.getText()))")
     Content entityToDomain(ContentEntity entity);
 

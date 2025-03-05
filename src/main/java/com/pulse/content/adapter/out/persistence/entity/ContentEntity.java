@@ -24,11 +24,6 @@ public class ContentEntity extends BaseEntity{
     @Column(name = "member_id")
     private Long memberId;
 
-    // 파일 리스트(vo) --> List<Attachment>
-    @ElementCollection
-    @CollectionTable(name = "content_attachment", joinColumns = @JoinColumn(name = "content_id"))
-    private List<ContentAttachmentEntity> contentAttachmentEntities;
-
     // 콘텐츠(vo)
     @Column(name = "title")
     private String title;

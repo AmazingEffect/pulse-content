@@ -12,19 +12,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ContentCategoryMapperHelper {
-    private final ContentMapper contentMapper;
-    private final CategoryMapper categoryMapper;
+public class CategoryMapperHelper {
 
-    /**
-     * 콘텐츠 도메인 객체를 콘텐츠 엔티티 객체로 변환
-     * @param content - 콘텐츠 도메인
-     * @return 콘텐츠 엔티티
-     */
-    @Named("contentDomainToEntity")
-    public ContentEntity contentDomainToEntity(Content content) {
-        return contentMapper.domainToEntity(content);
-    }
+    private final CategoryMapper categoryMapper;
 
     /**
      * 카테고리 도메인 객체를 카테고리 엔티티 객체로 변환
@@ -36,15 +26,6 @@ public class ContentCategoryMapperHelper {
         return categoryMapper.domainToEntity(category);
     }
 
-    /**
-     * 콘텐츠 엔티티 객체를 콘텐츠 도메인 객체로 변환
-     * @param contentEntity - 콘텐츠 엔티티
-     * @return 콘텐츠 도메인
-     */
-    @Named("contentEntityToDomain")
-    public Content contentEntityToDomain(ContentEntity contentEntity) {
-        return contentMapper.entityToDomain(contentEntity);
-    }
 
     /**
      * 카테고리 엔티티 객체를 카테고리 도메인 객체로 변환

@@ -1,11 +1,8 @@
 package com.pulse.content.mapper.helper;
 
 import com.pulse.content.adapter.out.persistence.entity.CategoryEntity;
-import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import com.pulse.content.domain.Category;
-import com.pulse.content.domain.Content;
 import com.pulse.content.mapper.CategoryMapper;
-import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;

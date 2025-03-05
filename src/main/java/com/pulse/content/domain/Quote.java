@@ -1,6 +1,6 @@
 package com.pulse.content.domain;
 
-import com.pulse.content.domain.key.PostId;
+import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.key.QuoteId;
 import lombok.*;
 
@@ -11,14 +11,14 @@ import lombok.*;
 public class Quote {
 
     private QuoteId quoteId;
-    private PostId originalPostId;    // 원본 게시글 id
-    private PostId citingPostId;      // 인용한 게시글 id
+    private ContentId originalContentId;    // 원본 게시글 id
+    private ContentId citingContentId;      // 인용한 게시글 id
 
     // factory method
-    public static Quote of(PostId originalPostId, PostId citingPostId) {
+    public static Quote of(ContentId originalContentId, ContentId citingContentId) {
         return Quote.builder()
-                .originalPostId(originalPostId)
-                .citingPostId(citingPostId)
+                .originalContentId(originalContentId)
+                .citingContentId(citingContentId)
                 .build();
     }
 }

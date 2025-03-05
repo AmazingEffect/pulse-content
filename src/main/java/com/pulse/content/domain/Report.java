@@ -13,7 +13,7 @@ import lombok.*;
 public class Report {
 
     private ReportId reportId;
-    private TargetType targetType;  // 신고 대상 타입(POST, COMMENT)
+    private TargetType targetType;  // 신고 대상 타입(CONTENT, COMMENT)
     private MemberId targetId;          // 신고 대상 id
     private MemberId memberId;          // 신고한 회원 id
     private CategoryId reportCategoryId;  // 신고 카테고리 id

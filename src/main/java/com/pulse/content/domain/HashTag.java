@@ -1,6 +1,6 @@
 package com.pulse.content.domain;
 
-import com.pulse.content.domain.key.HasTagId;
+import com.pulse.content.domain.key.HashTagId;
 import lombok.*;
 
 @Getter
@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class HashTag {
 
-    private HasTagId hasTagId;
+    private HashTagId hashTagId;
     private String name;    // 해시태그 이름
 
     // factory method

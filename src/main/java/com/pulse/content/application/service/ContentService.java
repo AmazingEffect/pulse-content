@@ -78,17 +78,6 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
                 .toList();
         createContentHashTagMapPort.createAll(contentHashTagMaps);
 
-
-        // todo: 카테고리
-        List<Long> categoryIds = createContentRequestDto.getCategoryIds();
-        // 카테고리 조회
-        List<Category> categories = findCategoryPort.findCategoriesByIds(categoryIds);
-        // 카테고리 맵 저장
-        List<ContentCategoryMap> contentCategoryMaps = categories.stream()
-                .map(category -> ContentCategoryMap.of(content, category))
-                .toList();
-        createContentCategoryMapPort.createAll(contentCategoryMaps);
-
         return contentMapper.domainToCreateResponseDTO(createdContent);
     }
 

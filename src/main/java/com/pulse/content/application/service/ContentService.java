@@ -59,9 +59,22 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 게시글 저장
         Content createdContent = createContentPort.create(content);
 
-        // todo: 해시태그
+        // 해시태그 목록 저장
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
+        List<HashTag> existingHashTags = createHashTags(hashTagNames);
 
+        // 해시태그 맵 목록 저장
+        createContentHashTagMaps(existingHashTags, createdContent);
+
+        return contentMapper.domainToCreateResponseDTO(createdContent);
+    }
+
+    /**
+     * 해시태그명으로 해시태그 조회 후, 저장 되어 있지 않은 해시태그명만 저장
+     * @param hashTagNames - 유저가 입력한 해시태그명
+     * @return 저장된 해시태그 목록
+     */
+    private List<HashTag> createHashTags(List<String> hashTagNames) {
         // 이미 저장된 해시태그 목록
         List<HashTag> existingHashTags = findHashTagPort.findByNames(hashTagNames);
         // 새로 저장할 해시태그 목록(저장 되어 있지 않은 해시태그명)
@@ -71,14 +84,19 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 해시태그 목록 저장
         List<HashTag> createdHashTags = createHashTagPort.createAll(newHashTags);
         existingHashTags.addAll(createdHashTags);
+        return existingHashTags;
+    }
 
-        // 해시태그 맵 저장
+    /**
+     * 해시태그와 콘텐츠로 ContentHashTagMap 저장
+     * @param existingHashTags - 기존에 저장 되어 있는 해시태그
+     * @param createdContent - 저장된 게시글
+     */
+    private void createContentHashTagMaps(List<HashTag> existingHashTags, Content createdContent) {
         List<ContentHashTagMap> contentHashTagMaps = existingHashTags.stream()
-                .map(hashTag -> ContentHashTagMap.of(content, hashTag))
+                .map(hashTag -> ContentHashTagMap.of(createdContent, hashTag))
                 .toList();
         createContentHashTagMapPort.createAll(contentHashTagMaps);
-
-        return contentMapper.domainToCreateResponseDTO(createdContent);
     }
 
     @Override

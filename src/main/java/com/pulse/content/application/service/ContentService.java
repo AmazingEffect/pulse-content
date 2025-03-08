@@ -14,11 +14,9 @@ import com.pulse.content.application.port.out.map.CreateContentCategoryMapPort;
 import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
 import com.pulse.content.common.annotation.UseCase;
 import com.pulse.content.common.enumerate.ContentStatus;
-import com.pulse.content.domain.Category;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
 import com.pulse.content.domain.key.ContentId;
-import com.pulse.content.domain.map.ContentCategoryMap;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +68,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     }
 
     /**
-     * 해시태그명으로 해시태그 조회 후, 저장 되어 있지 않은 해시태그명만 저장
+     * @apiNote 해시태그명으로 해시태그 조회 후, 저장 되어 있지 않은 해시태그명만 저장
      * @param hashTagNames - 유저가 입력한 해시태그명
      * @return 저장된 해시태그 목록
      */
@@ -88,7 +86,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     }
 
     /**
-     * 해시태그와 콘텐츠로 ContentHashTagMap 저장
+     * @apiNote 해시태그와 콘텐츠로 ContentHashTagMap 저장
      * @param existingHashTags - 기존에 저장 되어 있는 해시태그
      * @param createdContent - 저장된 게시글
      */

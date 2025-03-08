@@ -5,8 +5,8 @@ import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentCategoryMap;
+import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.domain.vo.ContentDetail;
-import com.pulse.content.domain.vo.ContentAttachment;
 import lombok.*;
 
 import java.util.List;
@@ -19,18 +19,18 @@ public class Content {
 
     private ContentId contentId;
     private MemberId memberId;
-    private List<Long> hashTagIds;
+    private List<ContentHashTagMap> contentHashTagMaps;
     private List<ContentCategoryMap> contentCategories;
     private ContentDetail contentDetail;
     private ContentStatus contentStatus;
     private ContentVisibility contentVisibility;
 
     // factory method
-    public static Content of(ContentId contentId, MemberId memberId, List<Long> hashTagIds, List<ContentCategoryMap> contentCategories, ContentDetail contentDetail, ContentStatus contentStatus, ContentVisibility contentVisibility) {
+    public static Content of(ContentId contentId, MemberId memberId,  List<ContentHashTagMap> contentHashTagMaps, List<ContentCategoryMap> contentCategories, ContentDetail contentDetail, ContentStatus contentStatus, ContentVisibility contentVisibility) {
         return Content.builder()
                 .contentId(contentId)
                 .memberId(memberId)
-                .hashTagIds(hashTagIds)
+                .contentHashTagMaps(contentHashTagMaps)
                 .contentCategories(contentCategories)
                 .contentDetail(contentDetail)
                 .contentStatus(contentStatus)
@@ -44,6 +44,22 @@ public class Content {
      */
     public void changeContentStatus(ContentStatus contentStatus) {
         this.contentStatus = contentStatus;
+    }
+
+    /**
+     * 콘텐츠 제목 및 내용 변경
+     * @param contentDetail - 변경할 콘텐츠 제목 및 내용
+     */
+    public void changeContentDetail(ContentDetail contentDetail) {
+        this.contentDetail = contentDetail;
+    }
+
+    /**
+     * 콘텐츠 공개 범위 변경
+     * @param contentVisibility - 변경할 콘텐츠 공개 범위
+     */
+    public void changeContentVisibility(ContentVisibility contentVisibility) {
+        this.contentVisibility = contentVisibility;
     }
 }
 

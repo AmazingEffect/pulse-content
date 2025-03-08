@@ -31,8 +31,10 @@ public class ContentController {
      * @return 응답 상태
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<CreateContentResponseDTO>> createContent(@RequestBody CreateContentRequestDTO createContentRequestDTO) {
+    public ApiResponse<CreateContentResponseDTO> createContent(
+            @RequestBody CreateContentRequestDTO createContentRequestDTO
+    ) {
         CreateContentResponseDTO createContentResponseDTO = createContentsUseCase.create(createContentRequestDTO);
-        return ResponseEntity.ok(ApiResponse.success(createContentResponseDTO));
+        return ApiResponse.success(createContentResponseDTO);
     }
 }

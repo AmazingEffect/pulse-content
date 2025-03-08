@@ -15,7 +15,6 @@ public class CreateContentRequestDTO {
 
     private MemberId memberId;                  // 작성자 id
     private List<String> hashTagNames;          // hashTag 목록
-    private List<Long> categoryIds;             // 카테고리 Id 목록
     private List<FileDTO> files;               // 첨부 파일 목록
     private String title;                       // 게시글 제목
     private String text;                        // 게시글 내용

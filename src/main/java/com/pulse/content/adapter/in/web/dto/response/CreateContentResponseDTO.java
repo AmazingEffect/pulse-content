@@ -19,7 +19,6 @@ public class CreateContentResponseDTO {
     private ContentId contentId;
     private MemberId memberId;
     private List<Long> hashTagIds;
-    private List<Long> categoryIds;
     private AttachId attachId;
     private String url;
     private FileId fileId;

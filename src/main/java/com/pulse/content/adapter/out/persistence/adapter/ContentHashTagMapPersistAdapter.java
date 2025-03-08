@@ -3,7 +3,9 @@ package com.pulse.content.adapter.out.persistence.adapter;
 import com.pulse.content.adapter.out.persistence.entity.map.ContentHashTagMapEntity;
 import com.pulse.content.adapter.out.persistence.repository.map.ContentHashTagMapRepository;
 import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
+import com.pulse.content.application.port.out.map.FindContentHashTagMapPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
+import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentHashTagMapMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapPort {
+public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapPort, FindContentHashTagMapPort {
 
     private final ContentHashTagMapRepository contentHashTagMapRepository;
     private final ContentHashTagMapMapper contentHashTagMapMapper;
@@ -45,6 +47,20 @@ public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapP
         List<ContentHashTagMapEntity> createdContentHashTagMapEntities = contentHashTagMapRepository.saveAll(contentHashTagMapEntities);
 
         return createdContentHashTagMapEntities.stream()
+                .map(contentHashTagMapMapper::entityToDomain)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * ContentId로 ContentHashTagMap 조회
+     * @param contentId - ContentHashTagMap 을 조회할 ContentId
+     * @return 조회된 ContentHashTagMap
+     */
+    @Override
+    public List<ContentHashTagMap> findByContentId(Long contentId) {
+        List<ContentHashTagMapEntity> contentHashTagMapEntities = contentHashTagMapRepository.findAllByContentEntity_ContentId(contentId);
+
+        return contentHashTagMapEntities.stream()
                 .map(contentHashTagMapMapper::entityToDomain)
                 .collect(Collectors.toList());
     }

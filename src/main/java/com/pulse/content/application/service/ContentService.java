@@ -1,5 +1,6 @@
 package com.pulse.content.application.service;
 
+import com.pulse.content.adapter.in.web.dto.FileDTO;
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.request.UpdateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
@@ -10,6 +11,7 @@ import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.application.port.in.content.UpdateContentUseCase;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
 import com.pulse.content.application.port.out.HashTag.FindHashTagPort;
+import com.pulse.content.application.port.out.attachment.CreateContentAttachmentPort;
 import com.pulse.content.application.port.out.content.CreateContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.out.content.UpdateContentPort;
@@ -17,13 +19,17 @@ import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
 import com.pulse.content.application.port.out.map.DeleteContentHashTagMapPort;
 import com.pulse.content.application.port.out.map.FindContentHashTagMapPort;
 import com.pulse.content.common.annotation.UseCase;
+import com.pulse.content.common.enumerate.AttachmentType;
 import com.pulse.content.common.enumerate.ContentStatus;
 import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
+import com.pulse.content.domain.key.AttachId;
 import com.pulse.content.domain.key.ContentId;
+import com.pulse.content.domain.key.FileId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.map.ContentHashTagMap;
+import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
 import com.pulse.content.exception.ContentException;
 import com.pulse.content.exception.ErrorCode;
@@ -47,6 +53,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     private final CreateContentPort createContentPort;
     private final CreateHashTagPort createHashTagPort;
     private final CreateContentHashTagMapPort createContentHashTagMapPort;
+    private final CreateContentAttachmentPort createContentAttachmentPort;
 
     private final FindContentPort findContentPort;
     private final FindHashTagPort findHashTagPort;
@@ -71,6 +78,10 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         content.changeContentStatus(ContentStatus.PUBLISHED);
         // 게시글 저장
         Content createdContent = createContentPort.create(content);
+
+        // file 리스트 저장
+        List<FileDTO> files = createContentRequestDto.getFiles();
+        createContentAttachments(files);
 
         // 해시태그 목록 저장
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
@@ -152,6 +163,27 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         createContentHashTagMaps(existingHashTags, content);    // 해시태그 맵 저장
 
         return contentMapper.domainToUpdateResponseDTO(updatedContent);
+    }
+
+    /**
+     * 첨부 파일 리스트 저장
+     * @param files - 저장할 첨부 파일 리스트
+     * @return 저장된 첨부 파일 리스트
+     */
+    public List<ContentAttachment> createContentAttachments(List<FileDTO> files) {
+        List<ContentAttachment> contentAttachments = files.stream()
+                .map(file -> {
+                    AttachId attachId = file.getAttachId();
+                    String url = file.getUrl();
+                    FileId fileId = file.getFileId();
+                    String contentType = file.getContentType();
+                    Long size = file.getSize();
+                    AttachmentType attachmentType = file.getAttachmentType();
+
+                    return ContentAttachment.of(attachId, url, fileId, contentType, size, attachmentType);
+                })
+                .toList();
+        return createContentAttachmentPort.createAll(contentAttachments);
     }
 
     /**

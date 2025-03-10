@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -138,46 +139,20 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 콘텐츠 수정
         Content updatedContent = updateContentPort.update(content);
 
-        // file 리스트 저장
-        List<FileDTO> files = updateContentRequestDTO.getFiles();
-        List<ContentAttachment> contentAttachments = files.stream()
-                .map(file -> {
-                    AttachId attachId = file.getAttachId();
-                    String url = file.getUrl();
-                    FileId fileId = file.getFileId();
-                    String contentType = file.getContentType();
-                    Long size = file.getSize();
-                    AttachmentType attachmentType = file.getAttachmentType();
+        // todo: file 리스트 수정
 
-                    return ContentAttachment.of(attachId, url, fileId, contentType, size, attachmentType);
-                })
-                .toList();
-        createContentAttachmentPort.createAll(contentAttachments);
-
-
+        // 해시태그 및 해시태그 맵
         List<String> hashTagNames = updateContentRequestDTO.getHashTagNames();
         List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
         if (ObjectUtils.isEmpty(contentHashTagMaps)) {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
 
-        // 삭제할 대상
-        List<Long> deleteContentHashTagMap = contentHashTagMaps.stream()
-                .filter(map -> !hashTagNames.contains(map.getHashTag().getName()))
-                .map(map -> map.getContentHashTagMapId().id())
-                .toList();
-        // 콘텐츠 해시태그 맵 삭제
-        deleteContentHashTagMapPort.deleteAll(deleteContentHashTagMap);
+        // 해시태그 맵 삭제
+        deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
 
-        Set<String> existingNames = contentHashTagMaps.stream()
-                .map(map -> map.getHashTag().getName())
-                .collect(Collectors.toSet());
-
-        // 새로운 해시태그 저장
-        Set<String> toInsert = new HashSet<>(hashTagNames);
-        toInsert.removeAll(existingNames); // existingNames에 있는 것 제거 -> 남는 것은 추가 해야 하는 것
-        List<HashTag> existingHashTags = createHashTags(hashTagNames);  // 해시태그 저장
-        createContentHashTagMaps(existingHashTags, content);    // 해시태그 맵 저장
+        // 해시태그 삭제
+        deleteAllHashTags(contentHashTagMaps, hashTagNames, updatedContent);
 
         return contentMapper.domainToUpdateResponseDTO(updatedContent);
     }
@@ -187,7 +162,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
      * @param files - 저장할 첨부 파일 리스트
      * @return 저장된 첨부 파일 리스트
      */
-    public List<ContentAttachment> createContentAttachments(List<FileDTO> files) {
+    private List<ContentAttachment> createContentAttachments(List<FileDTO> files) {
         List<ContentAttachment> contentAttachments = files.stream()
                 .map(file -> {
                     AttachId attachId = file.getAttachId();
@@ -232,6 +207,32 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
                 .map(hashTag -> ContentHashTagMap.of(createdContent, hashTag))
                 .toList();
         return createContentHashTagMapPort.createAll(contentHashTagMaps);
+    }
+
+    /**
+     * @apiNote ContentHashTagMap 리스트 삭제
+     * @param contentHashTagMaps - 저장 되어 있는 ContentHashTagMap 리스트
+     * @param hashTagNames - 유저가 입력 하지 않은 해스태그 리스트
+     */
+    private void deleteAllContentHashTagMap(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames) {
+        List<Long> deleteContentHashTagMap = contentHashTagMaps.stream()
+                .filter(map -> !hashTagNames.contains(map.getHashTag().getName()))
+                .map(map -> map.getContentHashTagMapId().id())
+                .toList();
+        // 콘텐츠 해시태그 맵 삭제
+        deleteContentHashTagMapPort.deleteAll(deleteContentHashTagMap);
+    }
+
+    private List<ContentHashTagMap> deleteAllHashTags(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames, Content content) {
+        Set<String> existingNames = contentHashTagMaps.stream()
+                .map(map -> map.getHashTag().getName())
+                .collect(Collectors.toSet());
+
+        // 새로운 해시태그 저장
+        Set<String> newHashTags = new HashSet<>(hashTagNames);
+        newHashTags.removeAll(existingNames); // existingNames에 있는 것 제거 -> 남는 것은 추가 해야 하는 것
+        List<HashTag> existingHashTags = createHashTags(new ArrayList<>(existingNames));  // 해시태그 저장
+        return createContentHashTagMaps(existingHashTags, content);    // 해시태그 맵 저장
     }
 
     @Override

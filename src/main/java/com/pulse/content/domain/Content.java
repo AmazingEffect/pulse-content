@@ -7,7 +7,10 @@ import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentCategoryMap;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.domain.vo.ContentDetail;
+import com.pulse.content.exception.ContentException;
+import com.pulse.content.exception.ErrorCode;
 import lombok.*;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -51,6 +54,9 @@ public class Content {
      * @param contentDetail - 변경할 콘텐츠 제목 및 내용
      */
     public void changeContentDetail(ContentDetail contentDetail) {
+        if (ObjectUtils.isEmpty(contentDetail)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
         this.contentDetail = contentDetail;
     }
 
@@ -59,6 +65,9 @@ public class Content {
      * @param contentVisibility - 변경할 콘텐츠 공개 범위
      */
     public void changeContentVisibility(ContentVisibility contentVisibility) {
+        if (ObjectUtils.isEmpty(contentVisibility)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
         this.contentVisibility = contentVisibility;
     }
 }

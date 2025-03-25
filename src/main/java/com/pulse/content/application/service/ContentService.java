@@ -216,8 +216,8 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
      */
     private void deleteAllContentHashTagMap(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames) {
         List<Long> deleteContentHashTagMap = contentHashTagMaps.stream()
-                .filter(map -> !hashTagNames.contains(map.getHashTag().getName()))
-                .map(map -> map.getContentHashTagMapId().id())
+                .filter(contentHashTagMap -> !hashTagNames.contains(contentHashTagMap.getHashTag().getName()))
+                .map(contentHashTagMap -> contentHashTagMap.getContentHashTagMapId().id())
                 .toList();
         // 콘텐츠 해시태그 맵 삭제
         deleteContentHashTagMapPort.deleteAll(deleteContentHashTagMap);
@@ -225,7 +225,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     private List<ContentHashTagMap> deleteAllHashTags(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames, Content content) {
         Set<String> existingNames = contentHashTagMaps.stream()
-                .map(map -> map.getHashTag().getName())
+                .map(contentHashTagMap -> contentHashTagMap.getHashTag().getName())
                 .collect(Collectors.toSet());
 
         // 새로운 해시태그 저장

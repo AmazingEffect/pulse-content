@@ -3,11 +3,13 @@ package com.pulse.content.application.service;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.application.port.FindContentPort;
 import com.pulse.content.application.port.FindPostCategoryMapPort;
+import com.pulse.content.application.port.FindPostHashTagMapPort;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.common.annotation.UseCase;
 import com.pulse.content.domain.Post;
 import com.pulse.content.domain.key.PostId;
 import com.pulse.content.domain.map.PostCategoryMap;
+import com.pulse.content.domain.map.PostHashTag;
 import com.pulse.content.mapper.ContentMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class FindContentService implements FindContentUseCase {
 
     private final FindPostCategoryMapPort findPostCategoryMapPort;
+    private final FindPostHashTagMapPort findPostHashTagMapPort;
     private final ContentMapper contentMapper;
     private final FindContentPort findContentPort;
 
@@ -38,6 +41,8 @@ public class FindContentService implements FindContentUseCase {
         // 카테고리 조회(위에서 찾은 객체로 카테고리 조회)
 
         // 해시태그 조회
+        List<PostHashTag> findPostHashTagMap = findPostHashTagMapPort.findHashTagsByPostId(postId);
+
         return contentMapper.domainToResponseDTO(findPost);
     }
 }

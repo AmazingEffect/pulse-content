@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(name = "post_hashtag_map")
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostHashTagMapEntity extends BaseEntity {

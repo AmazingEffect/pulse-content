@@ -6,7 +6,7 @@ import com.pulse.content.domain.key.PostHashTagId;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostHashTag {

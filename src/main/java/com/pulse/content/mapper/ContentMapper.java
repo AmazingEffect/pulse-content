@@ -3,6 +3,7 @@ package com.pulse.content.mapper;
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
+import com.pulse.content.adapter.in.web.dto.response.UpdateContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.vo.ContentDetail;
@@ -36,4 +37,5 @@ public interface ContentMapper {
     // 응답 도메인을 회원가입 응답 DTO로 변환
     FindContentResponseDTO domainToResponseDTO(Content content);
 
+    UpdateContentResponseDTO domainToUpdateResponseDTO(Content updatedContent);
 }

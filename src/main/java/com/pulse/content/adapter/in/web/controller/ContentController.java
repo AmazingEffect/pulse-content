@@ -1,11 +1,14 @@
 package com.pulse.content.adapter.in.web.controller;
 
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
+import com.pulse.content.adapter.in.web.dto.request.UpdateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
+import com.pulse.content.adapter.in.web.dto.response.UpdateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.api.ApiResponse;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
+import com.pulse.content.application.port.in.content.UpdateContentUseCase;
 import com.pulse.content.domain.key.ContentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ public class ContentController {
 
     private final CreateContentsUseCase createContentsUseCase;
     private final FindContentUseCase findContentUseCase;
+    private final UpdateContentUseCase updateContentUseCase;
 
     @GetMapping("/find/contents/{contentId}")
     public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable ContentId contentId) {
@@ -31,8 +35,23 @@ public class ContentController {
      * @return 응답 상태
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<CreateContentResponseDTO>> createContent(@RequestBody CreateContentRequestDTO createContentRequestDTO) {
+    public ApiResponse<CreateContentResponseDTO> createContent(
+            @RequestBody CreateContentRequestDTO createContentRequestDTO
+    ) {
         CreateContentResponseDTO createContentResponseDTO = createContentsUseCase.create(createContentRequestDTO);
-        return ResponseEntity.ok(ApiResponse.success(createContentResponseDTO));
+        return ApiResponse.success(createContentResponseDTO);
+    }
+
+    /**
+     * @apiNote 게시글 수정을 위한 api
+     * @param updateContentRequestDTO 게시글 데이터
+     * @return 응답 상태
+     */
+    @PostMapping("/create")
+    public ApiResponse<UpdateContentResponseDTO> createContent(
+            @RequestBody UpdateContentRequestDTO updateContentRequestDTO
+    ) {
+        UpdateContentResponseDTO updateContentResponseDTO = updateContentUseCase.update(updateContentRequestDTO);
+        return ApiResponse.success(updateContentResponseDTO);
     }
 }

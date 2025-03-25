@@ -1,18 +1,20 @@
-package com.pulse.content.adapter.in.web.dto.request;
+package com.pulse.content.adapter.in.web.dto.response;
 
 import com.pulse.content.adapter.in.web.dto.FileDTO;
 import com.pulse.content.common.enumerate.ContentVisibility;
+import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.key.MemberId;
 import lombok.*;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@Builder(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateContentRequestDTO {
+@Builder(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UpdateContentResponseDTO {
 
+    private ContentId contentId;                // 콘텐츠 id
     private MemberId memberId;                  // 작성자 id
     private List<String> hashTagNames;          // hashTag 목록
     private List<FileDTO> files;               // 첨부 파일 목록

@@ -96,44 +96,33 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     /**
      * 게시글 수정 및 관련 데이터 수정
-     * @param updateContentRequestDTO - 수정할 콘텐츠 정보
+     * @param updateContentRequestDTO 수정할 콘텐츠 정보
      * @return 수정된 콘텐츠 정보
      */
     @Transactional
     @Override
     public UpdateContentResponseDTO update(UpdateContentRequestDTO updateContentRequestDTO) {
         ContentId contentId = updateContentRequestDTO.getContentId();
-        if (ObjectUtils.isEmpty(contentId) || ObjectUtils.isEmpty(contentId.id())) {
-            throw new ContentException(ErrorCode.CONTENT_ID_REQUIRED);
-        }
+        contentIdValidation(contentId);
 
         // 콘텐츠 조회
         Content content = findContentPort.findContent(contentId);
-
-        if (ObjectUtils.isEmpty(content)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
+        contentValidation(content);
 
         // 작성자와 수정자 아이디 비교
         MemberId wirteMemberId = content.getMemberId();
         MemberId updateMemberId = updateContentRequestDTO.getMemberId();
-        if (!wirteMemberId.equals(updateMemberId)) {
-            throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
-        }
+        memberIdValidation(!wirteMemberId.equals(updateMemberId));
 
         // 콘텐츠 제목 및 내용 변경
         String title = updateContentRequestDTO.getTitle();
         String contentText = updateContentRequestDTO.getText();
-        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
+        contentTitleAndTextValidation(title, contentText);
         content.changeContentDetail(ContentDetail.of(title, contentText));
 
         // 콘텐츠 공개 범위 변경
         ContentVisibility contentVisibility = updateContentRequestDTO.getContentVisibility();
-        if (ObjectUtils.isEmpty(contentVisibility)) {
-            throw new ContentException(ErrorCode.CONTENT_VISIBILITY_REQUIRED);
-        }
+        contentVisibilityValidation(contentVisibility);
         content.changeContentVisibility(contentVisibility);
 
         // 콘텐츠 수정
@@ -144,9 +133,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 해시태그 및 해시태그 맵
         List<String> hashTagNames = updateContentRequestDTO.getHashTagNames();
         List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
-        if (ObjectUtils.isEmpty(contentHashTagMaps)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
+        contentHashTagMapValidation(contentHashTagMaps);
 
         // 해시태그 맵 삭제
         deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
@@ -156,7 +143,6 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
         return contentMapper.domainToUpdateResponseDTO(updatedContent);
     }
-
     /**
      * 첨부 파일 리스트 저장
      * @param files - 저장할 첨부 파일 리스트
@@ -240,4 +226,66 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         Content findContent = findContentPort.findContent(contentId); // 행위에 대한 이름으로
         return contentMapper.domainToResponseDTO(findContent);
     }
+
+    /**
+     * 콘텐츠 Id 유효성 검사
+     * @param contentId 콘텐츠 id
+     */
+    private void contentIdValidation(ContentId contentId) {
+        if (ObjectUtils.isEmpty(contentId) || ObjectUtils.isEmpty(contentId.id())) {
+            throw new ContentException(ErrorCode.CONTENT_ID_REQUIRED);
+        }
+    }
+
+    /**
+     * 콘텐츠해시태그맵 유효성 검사
+     * @param contentHashTagMaps 콘텐츠해시태그맵
+     */
+    private void contentHashTagMapValidation(List<ContentHashTagMap> contentHashTagMaps) {
+        if (ObjectUtils.isEmpty(contentHashTagMaps)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 콘텐츠 공개 범위 유효성 검사
+     * @param contentVisibility 콘텐츠 공개 범위
+     */
+    private void contentVisibilityValidation(ContentVisibility contentVisibility) {
+        if (ObjectUtils.isEmpty(contentVisibility)) {
+            throw new ContentException(ErrorCode.CONTENT_VISIBILITY_REQUIRED);
+        }
+    }
+
+    /**
+     * 콘텐츠 제목 및 내용 유효성 검사
+     * @param title 제목
+     * @param contentText 내용
+     */
+    private void contentTitleAndTextValidation(String title, String contentText) {
+        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 콘텐츠 작성자 id 유효성 검사
+     * @param writerMemberId 콘텐츠 작성자 id
+     */
+    private void memberIdValidation(boolean writerMemberId) {
+        if (writerMemberId) {
+            throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
+        }
+    }
+
+    /**
+     * 콘텐츠 유효성 검사
+     * @param content 콘텐츠
+     */
+    private void contentValidation(Content content) {
+        if (ObjectUtils.isEmpty(content)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
 }

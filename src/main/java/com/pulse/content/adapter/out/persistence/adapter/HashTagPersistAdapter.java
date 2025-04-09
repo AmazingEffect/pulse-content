@@ -3,6 +3,7 @@ package com.pulse.content.adapter.out.persistence.adapter;
 import com.pulse.content.adapter.out.persistence.entity.HashTagEntity;
 import com.pulse.content.adapter.out.persistence.repository.HashTagRepository;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
+import com.pulse.content.application.port.out.HashTag.DeleteHashTagPort;
 import com.pulse.content.application.port.out.HashTag.FindHashTagPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
 import com.pulse.content.domain.HashTag;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort {
+public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort, DeleteHashTagPort {
 
     private final HashTagRepository hashTagRepository;
     private final HashTagMapper hashTagMapper;
@@ -74,5 +75,14 @@ public class HashTagPersistAdapter implements CreateHashTagPort, FindHashTagPort
         return hashTagEntities.stream()
                 .map(hashTagMapper::entityToDomain)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * id 목록에 해당하는 해시태그 삭제
+     * @param ids 해시태그 id 목록
+     */
+    @Override
+    public void deleteAllById(List<Long> ids) {
+        hashTagRepository.deleteAllById(ids);
     }
 }

@@ -3,6 +3,7 @@ package com.pulse.content.adapter.out.persistence.adapter;
 import com.pulse.content.adapter.out.persistence.entity.vo.ContentAttachmentEntity;
 import com.pulse.content.adapter.out.persistence.repository.ContentAttachmentRepository;
 import com.pulse.content.application.port.out.attachment.CreateContentAttachmentPort;
+import com.pulse.content.application.port.out.attachment.DeleteContentAttachmentPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
 import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.mapper.ContentAttachmentMapper;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ContentAttachmentPersistAdapter implements CreateContentAttachmentPort {
+public class ContentAttachmentPersistAdapter implements CreateContentAttachmentPort, DeleteContentAttachmentPort {
 
     private final ContentAttachmentRepository contentAttachmentRepository;
     private final ContentAttachmentMapper contentAttachmentMapper;
@@ -34,5 +35,14 @@ public class ContentAttachmentPersistAdapter implements CreateContentAttachmentP
         return createdContentAttachmentEntities.stream()
                 .map(contentAttachmentMapper::entityToDomain)
                 .toList();
+    }
+
+    /**
+     * ContentId로 ContentAttachment 삭제
+     * @param contentId contentId
+     */
+    @Override
+    public void deleteAllByContentId(Long contentId) {
+        contentAttachmentRepository.deleteAllByContentEntity_ContentId(contentId);
     }
 }

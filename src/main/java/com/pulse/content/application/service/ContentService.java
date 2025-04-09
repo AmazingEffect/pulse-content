@@ -2,17 +2,23 @@ package com.pulse.content.application.service;
 
 import com.pulse.content.adapter.in.web.dto.FileDTO;
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
+import com.pulse.content.adapter.in.web.dto.request.DeleteContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.request.UpdateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
+import com.pulse.content.adapter.in.web.dto.response.DeleteContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.UpdateContentResponseDTO;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
+import com.pulse.content.application.port.in.content.DeleteContentUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.application.port.in.content.UpdateContentUseCase;
 import com.pulse.content.application.port.out.HashTag.CreateHashTagPort;
+import com.pulse.content.application.port.out.HashTag.DeleteHashTagPort;
 import com.pulse.content.application.port.out.HashTag.FindHashTagPort;
 import com.pulse.content.application.port.out.attachment.CreateContentAttachmentPort;
+import com.pulse.content.application.port.out.attachment.DeleteContentAttachmentPort;
 import com.pulse.content.application.port.out.content.CreateContentPort;
+import com.pulse.content.application.port.out.content.DeleteContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.out.content.UpdateContentPort;
 import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
@@ -24,10 +30,7 @@ import com.pulse.content.common.enumerate.ContentStatus;
 import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
-import com.pulse.content.domain.key.AttachId;
-import com.pulse.content.domain.key.ContentId;
-import com.pulse.content.domain.key.FileId;
-import com.pulse.content.domain.key.MemberId;
+import com.pulse.content.domain.key.*;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
@@ -47,7 +50,7 @@ import java.util.stream.Collectors;
 @UseCase
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ContentService implements CreateContentsUseCase, FindContentUseCase, UpdateContentUseCase {
+public class ContentService implements CreateContentsUseCase, FindContentUseCase, UpdateContentUseCase, DeleteContentUseCase {
 
     private final ContentMapper contentMapper;
 
@@ -62,6 +65,9 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     private final UpdateContentPort updateContentPort;
 
+    private final DeleteContentAttachmentPort deleteContentAttachmentPort;
+    private final DeleteContentPort deleteContentPort;
+    private final DeleteHashTagPort deleteHashTagPort;
     private final DeleteContentHashTagMapPort deleteContentHashTagMapPort;
 
     /**
@@ -96,6 +102,9 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     /**
      * 게시글 수정 및 관련 데이터 수정
+     * 1. 콘텐츠 수정
+     * 2. file 수정
+     * 3. 해시태그 및 해시태그 맵 수정
      * @param updateContentRequestDTO 수정할 콘텐츠 정보
      * @return 수정된 콘텐츠 정보
      */
@@ -110,9 +119,9 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         contentValidation(content);
 
         // 작성자와 수정자 아이디 비교
-        MemberId wirteMemberId = content.getMemberId();
+        MemberId writerMemberId = content.getMemberId();
         MemberId updateMemberId = updateContentRequestDTO.getMemberId();
-        memberIdValidation(!wirteMemberId.equals(updateMemberId));
+        memberIdValidation(writerMemberId, updateMemberId);
 
         // 콘텐츠 제목 및 내용 변경
         String title = updateContentRequestDTO.getTitle();
@@ -138,11 +147,52 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 해시태그 맵 삭제
         deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
 
-        // 해시태그 삭제
-        deleteAllHashTags(contentHashTagMaps, hashTagNames, updatedContent);
+        // 수정한 해시태그 목록 중 신규 해시태그 등록
+        createContentHashTagMap(contentHashTagMaps, hashTagNames, updatedContent);
 
         return contentMapper.domainToUpdateResponseDTO(updatedContent);
     }
+
+    /**
+     * 게시글 삭제 및 관련 데이터 삭제
+     * 1. 해시태그 및 해시태그 맵 삭제
+     * 2. file 삭제
+     * 3. 콘텐츠 삭제
+     * @param deleteContentRequestDTO 삭제할 콘텐츠 정보
+     * @return 삭제된 콘텐츠 정보
+     */
+    @Override
+    public DeleteContentResponseDTO delete(DeleteContentRequestDTO deleteContentRequestDTO) {
+        // 콘텐츠 아이디 유효성 검사
+        ContentId contentId = deleteContentRequestDTO.getContentId();
+        contentIdValidation(contentId);
+
+        // 콘텐츠 유효성 검사
+        Content content = findContentPort.findContent(contentId);
+        contentValidation(content);
+
+        // 작성자 아이디 유효성 검사
+        MemberId writerMemberId = content.getMemberId();
+        MemberId deleterMemberId = deleteContentRequestDTO.getMemberId();
+        memberIdValidation(writerMemberId, deleterMemberId);
+
+        // 1. 해시태그 및 해시태그 맵 삭제
+        List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
+        List<Long> hashTagIds = contentHashTagMaps.stream()
+                        .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
+                        .toList();
+        deleteHashTagPort.deleteAllById(hashTagIds);
+        deleteContentHashTagMapPort.deleteAllByContentId(contentId.id());
+
+        // file 삭제
+        deleteContentAttachmentPort.deleteAllByContentId(contentId.id());
+
+        // 콘텐츠 삭제
+        deleteContentPort.deleteById(contentId.id());
+
+        return contentMapper.domainToDeleteResponseDTO(content);
+    }
+
     /**
      * 첨부 파일 리스트 저장
      * @param files - 저장할 첨부 파일 리스트
@@ -206,10 +256,17 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
                 .map(contentHashTagMap -> contentHashTagMap.getContentHashTagMapId().id())
                 .toList();
         // 콘텐츠 해시태그 맵 삭제
-        deleteContentHashTagMapPort.deleteAll(deleteContentHashTagMap);
+        deleteContentHashTagMapPort.deleteAllById(deleteContentHashTagMap);
     }
 
-    private List<ContentHashTagMap> deleteAllHashTags(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames, Content content) {
+    /**
+     * 신규 콘텐츠 해시태그 맵 저장
+     * @param contentHashTagMaps 콘텐츠 해시태그 맵 목록
+     * @param hashTagNames 해시태그명 목록
+     * @param content 콘텐츠
+     * @return 저장된 해시태그 맵 목록
+     */
+    private List<ContentHashTagMap> createContentHashTagMap(List<ContentHashTagMap> contentHashTagMaps, List<String> hashTagNames, Content content) {
         Set<String> existingNames = contentHashTagMaps.stream()
                 .map(contentHashTagMap -> contentHashTagMap.getHashTag().getName())
                 .collect(Collectors.toSet());
@@ -270,10 +327,12 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
     /**
      * 콘텐츠 작성자 id 유효성 검사
+     * 콘텐츠 작성자 Id 와 요청 회원 Id가 같은지 확인
      * @param writerMemberId 콘텐츠 작성자 id
+     * @param memberId 수정 및 삭제 요청 회원 id
      */
-    private void memberIdValidation(boolean writerMemberId) {
-        if (writerMemberId) {
+    private void memberIdValidation(MemberId writerMemberId, MemberId memberId) {
+        if (!writerMemberId.equals(memberId)) {
             throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
         }
     }

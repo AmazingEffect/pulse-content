@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ContentHashTagMapRepository extends JpaRepository<ContentHashTagMapEntity, Long> {
     List<ContentHashTagMapEntity> findAllByContentEntity_ContentId(Long contentId);
+    void deleteAllByContentEntity_ContentId(Long contentId);
 }

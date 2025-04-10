@@ -3,7 +3,12 @@ package com.pulse.content.domain.map;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
 import com.pulse.content.domain.key.ContentHashTagMapId;
+import com.pulse.content.exception.ContentException;
+import com.pulse.content.exception.ErrorCode;
 import lombok.*;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 @Getter
 @Builder(access = AccessLevel.PUBLIC)
@@ -19,5 +24,15 @@ public class ContentHashTagMap {
                 .content(content)
                 .hashTag(hashTag)
                 .build();
+    }
+
+    /**
+     * 콘텐츠해시태그맵 유효성 검사
+     * @param contentHashTagMaps 콘텐츠해시태그맵
+     */
+    public static void contentHashTagMapValidation(List<ContentHashTagMap> contentHashTagMaps) {
+        if (ObjectUtils.isEmpty(contentHashTagMaps)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
     }
 }

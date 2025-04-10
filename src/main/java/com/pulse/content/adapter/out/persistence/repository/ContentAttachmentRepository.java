@@ -4,4 +4,5 @@ import com.pulse.content.adapter.out.persistence.entity.vo.ContentAttachmentEnti
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContentAttachmentRepository extends JpaRepository<ContentAttachmentEntity, Long> {
+    void deleteAllByContentEntity_ContentId(Long contentId);
 }

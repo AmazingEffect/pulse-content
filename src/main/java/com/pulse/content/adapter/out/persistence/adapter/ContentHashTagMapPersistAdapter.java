@@ -67,10 +67,19 @@ public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapP
 
     /**
      * ContentHashTagMapId 리스트에 해당하는 ContentHashTagMap 전부 삭제
-     * @param contentHashTagMapIds - 삭제할 ContentHashTagMap 리스트
+     * @param contentHashTagMapIds 삭제할 ContentHashTagMap 리스트
      */
     @Override
-    public void deleteAll(List<Long> contentHashTagMapIds) {
+    public void deleteAllById(List<Long> contentHashTagMapIds) {
         contentHashTagMapRepository.deleteAllById(contentHashTagMapIds);
+    }
+
+    /**
+     * ContentId 에 해당하는 ContentHashTagMap 전부 삭제
+     * @param contentId 삭제할 ContentId
+     */
+    @Override
+    public void deleteAllByContentId(Long contentId) {
+        contentHashTagMapRepository.deleteAllByContentEntity_ContentId(contentId);
     }
 }

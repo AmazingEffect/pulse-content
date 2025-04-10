@@ -1,12 +1,15 @@
 package com.pulse.content.adapter.in.web.controller;
 
 import com.pulse.content.adapter.in.web.dto.request.CreateContentRequestDTO;
+import com.pulse.content.adapter.in.web.dto.request.DeleteContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.request.UpdateContentRequestDTO;
 import com.pulse.content.adapter.in.web.dto.response.CreateContentResponseDTO;
+import com.pulse.content.adapter.in.web.dto.response.DeleteContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.UpdateContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.api.ApiResponse;
 import com.pulse.content.application.port.in.content.CreateContentsUseCase;
+import com.pulse.content.application.port.in.content.DeleteContentUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.application.port.in.content.UpdateContentUseCase;
 import com.pulse.content.domain.key.ContentId;
@@ -22,6 +25,7 @@ public class ContentController {
     private final CreateContentsUseCase createContentsUseCase;
     private final FindContentUseCase findContentUseCase;
     private final UpdateContentUseCase updateContentUseCase;
+    private final DeleteContentUseCase deleteContentUseCase;
 
     @GetMapping("/find/contents/{contentId}")
     public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable ContentId contentId) {
@@ -53,5 +57,18 @@ public class ContentController {
     ) {
         UpdateContentResponseDTO updateContentResponseDTO = updateContentUseCase.update(updateContentRequestDTO);
         return ApiResponse.success(updateContentResponseDTO);
+    }
+
+    /**
+     * @apiNote 게시글 삭제를 위한 api
+     * @param deleteContentRequestDTO 게시글 데이터
+     * @return 응답 상태
+     */
+    @DeleteMapping("/delete")
+    public ApiResponse<DeleteContentResponseDTO> deleteContent(
+            @RequestBody DeleteContentRequestDTO deleteContentRequestDTO
+    ) {
+        DeleteContentResponseDTO deleteContentResponseDTO = deleteContentUseCase.delete(deleteContentRequestDTO);
+        return ApiResponse.success(deleteContentResponseDTO);
     }
 }

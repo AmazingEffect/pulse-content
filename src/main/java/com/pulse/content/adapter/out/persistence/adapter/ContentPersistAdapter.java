@@ -4,6 +4,7 @@ package com.pulse.content.adapter.out.persistence.adapter;
 import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import com.pulse.content.adapter.out.persistence.repository.ContentRepository;
 import com.pulse.content.application.port.out.content.CreateContentPort;
+import com.pulse.content.application.port.out.content.DeleteContentPort;
 import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.out.content.UpdateContentPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class ContentPersistAdapter implements CreateContentPort, FindContentPort, UpdateContentPort {
+public class ContentPersistAdapter implements CreateContentPort, FindContentPort, UpdateContentPort, DeleteContentPort {
 
     private final ContentRepository contentRepository;
     private final ContentMapper contentMapper;
@@ -52,5 +53,14 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
         ContentEntity updatedContentEntity = contentRepository.save(contentEntity);
 
         return contentMapper.entityToDomain(updatedContentEntity);
+    }
+
+    /**
+     * 콘텐츠 삭제
+     * @param id 아이디
+     */
+    @Override
+    public void deleteById(Long id) {
+        contentRepository.deleteById(id);
     }
 }

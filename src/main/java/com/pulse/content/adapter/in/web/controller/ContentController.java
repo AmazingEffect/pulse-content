@@ -64,7 +64,7 @@ public class ContentController {
      * @param deleteContentRequestDTO 게시글 데이터
      * @return 응답 상태
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ApiResponse<DeleteContentResponseDTO> deleteContent(
             @RequestBody DeleteContentRequestDTO deleteContentRequestDTO
     ) {

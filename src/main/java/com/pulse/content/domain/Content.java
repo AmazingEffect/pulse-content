@@ -42,6 +42,37 @@ public class Content {
     }
 
     /**
+     * 콘텐츠 유효성 검사
+     * @param content 콘텐츠
+     */
+    public static void contentValidation(Content content) {
+        if (ObjectUtils.isEmpty(content)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 콘텐츠 Id 유효성 검사
+     * @param contentId 콘텐츠 id
+     */
+    public static void contentIdValidation(ContentId contentId) {
+        if (ObjectUtils.isEmpty(contentId) || ObjectUtils.isEmpty(contentId.id())) {
+            throw new ContentException(ErrorCode.CONTENT_ID_REQUIRED);
+        }
+    }
+
+    /**
+     * 콘텐츠 제목 및 내용 유효성 검사
+     * @param title 제목
+     * @param contentText 내용
+     */
+    public static void titleAndTextValidation(String title, String contentText) {
+        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
+    /**
      * ContentStatus(게시글 상태) 변경
      * @param contentStatus - 변경할 게시글 상태
      */

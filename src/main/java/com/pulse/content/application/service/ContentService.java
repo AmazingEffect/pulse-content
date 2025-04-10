@@ -30,16 +30,14 @@ import com.pulse.content.common.enumerate.ContentStatus;
 import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.Content;
 import com.pulse.content.domain.HashTag;
+import com.pulse.content.domain.Member;
 import com.pulse.content.domain.key.*;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
-import com.pulse.content.exception.ContentException;
-import com.pulse.content.exception.ErrorCode;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -112,26 +110,26 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     @Override
     public UpdateContentResponseDTO update(UpdateContentRequestDTO updateContentRequestDTO) {
         ContentId contentId = updateContentRequestDTO.getContentId();
-        contentIdValidation(contentId);
+        Content.contentIdValidation(contentId);
 
         // 콘텐츠 조회
         Content content = findContentPort.findContent(contentId);
-        contentValidation(content);
+        Content.contentValidation(content);
 
         // 작성자와 수정자 아이디 비교
         MemberId writerMemberId = content.getMemberId();
         MemberId updateMemberId = updateContentRequestDTO.getMemberId();
-        memberIdValidation(writerMemberId, updateMemberId);
+        Member.writerIdValidation(writerMemberId, updateMemberId);
 
         // 콘텐츠 제목 및 내용 변경
         String title = updateContentRequestDTO.getTitle();
         String contentText = updateContentRequestDTO.getText();
-        contentTitleAndTextValidation(title, contentText);
+        Content.titleAndTextValidation(title, contentText);
         content.changeContentDetail(ContentDetail.of(title, contentText));
 
         // 콘텐츠 공개 범위 변경
         ContentVisibility contentVisibility = updateContentRequestDTO.getContentVisibility();
-        contentVisibilityValidation(contentVisibility);
+        ContentVisibility.contentVisibilityValidation(contentVisibility);
         content.changeContentVisibility(contentVisibility);
 
         // 콘텐츠 수정
@@ -142,7 +140,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // 해시태그 및 해시태그 맵
         List<String> hashTagNames = updateContentRequestDTO.getHashTagNames();
         List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
-        contentHashTagMapValidation(contentHashTagMaps);
+        ContentHashTagMap.contentHashTagMapValidation(contentHashTagMaps);
 
         // 해시태그 맵 삭제
         deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
@@ -165,16 +163,16 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     public DeleteContentResponseDTO delete(DeleteContentRequestDTO deleteContentRequestDTO) {
         // 콘텐츠 아이디 유효성 검사
         ContentId contentId = deleteContentRequestDTO.getContentId();
-        contentIdValidation(contentId);
+        Content.contentIdValidation(contentId);
 
         // 콘텐츠 유효성 검사
         Content content = findContentPort.findContent(contentId);
-        contentValidation(content);
+        Content.contentValidation(content);
 
         // 작성자 아이디 유효성 검사
         MemberId writerMemberId = content.getMemberId();
         MemberId deleterMemberId = deleteContentRequestDTO.getMemberId();
-        memberIdValidation(writerMemberId, deleterMemberId);
+        Member.writerIdValidation(writerMemberId, deleterMemberId);
 
         // 1. 해시태그 및 해시태그 맵 삭제
         List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
@@ -283,68 +281,4 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         Content findContent = findContentPort.findContent(contentId); // 행위에 대한 이름으로
         return contentMapper.domainToResponseDTO(findContent);
     }
-
-    /**
-     * 콘텐츠 Id 유효성 검사
-     * @param contentId 콘텐츠 id
-     */
-    private void contentIdValidation(ContentId contentId) {
-        if (ObjectUtils.isEmpty(contentId) || ObjectUtils.isEmpty(contentId.id())) {
-            throw new ContentException(ErrorCode.CONTENT_ID_REQUIRED);
-        }
-    }
-
-    /**
-     * 콘텐츠해시태그맵 유효성 검사
-     * @param contentHashTagMaps 콘텐츠해시태그맵
-     */
-    private void contentHashTagMapValidation(List<ContentHashTagMap> contentHashTagMaps) {
-        if (ObjectUtils.isEmpty(contentHashTagMaps)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
-
-    /**
-     * 콘텐츠 공개 범위 유효성 검사
-     * @param contentVisibility 콘텐츠 공개 범위
-     */
-    private void contentVisibilityValidation(ContentVisibility contentVisibility) {
-        if (ObjectUtils.isEmpty(contentVisibility)) {
-            throw new ContentException(ErrorCode.CONTENT_VISIBILITY_REQUIRED);
-        }
-    }
-
-    /**
-     * 콘텐츠 제목 및 내용 유효성 검사
-     * @param title 제목
-     * @param contentText 내용
-     */
-    private void contentTitleAndTextValidation(String title, String contentText) {
-        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
-
-    /**
-     * 콘텐츠 작성자 id 유효성 검사
-     * 콘텐츠 작성자 Id 와 요청 회원 Id가 같은지 확인
-     * @param writerMemberId 콘텐츠 작성자 id
-     * @param memberId 수정 및 삭제 요청 회원 id
-     */
-    private void memberIdValidation(MemberId writerMemberId, MemberId memberId) {
-        if (!writerMemberId.equals(memberId)) {
-            throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
-        }
-    }
-
-    /**
-     * 콘텐츠 유효성 검사
-     * @param content 콘텐츠
-     */
-    private void contentValidation(Content content) {
-        if (ObjectUtils.isEmpty(content)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
-
 }

@@ -139,7 +139,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
         // 해시태그 및 해시태그 맵
         List<String> hashTagNames = updateContentRequestDTO.getHashTagNames();
-        List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
+        List<ContentHashTagMap> contentHashTagMaps = content.getContentHashTagMaps();
         ContentHashTagMap.contentHashTagMapValidation(contentHashTagMaps);
 
         // 해시태그 맵 삭제
@@ -175,7 +175,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         Member.writerIdValidation(writerMemberId, deleterMemberId);
 
         // 1. 해시태그 및 해시태그 맵 삭제
-        List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
+        List<ContentHashTagMap> contentHashTagMaps = content.getContentHashTagMaps();
         List<Long> hashTagIds = contentHashTagMaps.stream()
                         .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
                         .toList();

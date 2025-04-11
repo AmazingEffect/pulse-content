@@ -6,6 +6,7 @@ import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentCategoryMap;
 import com.pulse.content.domain.map.ContentHashTagMap;
+import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
 import com.pulse.content.exception.ContentException;
 import com.pulse.content.exception.ErrorCode;
@@ -21,18 +22,19 @@ import java.util.List;
 public class Content {
 
     private ContentId contentId;
-    private MemberId memberId;
+    private MemberId writerId;
     private List<ContentHashTagMap> contentHashTagMaps;
     private List<ContentCategoryMap> contentCategories;
+    private List<ContentAttachment> contentAttachments;
     private ContentDetail contentDetail;
     private ContentStatus contentStatus;
     private ContentVisibility contentVisibility;
 
     // factory method
-    public static Content of(ContentId contentId, MemberId memberId,  List<ContentHashTagMap> contentHashTagMaps, List<ContentCategoryMap> contentCategories, ContentDetail contentDetail, ContentStatus contentStatus, ContentVisibility contentVisibility) {
+    public static Content of(ContentId contentId, MemberId writerId,  List<ContentHashTagMap> contentHashTagMaps, List<ContentCategoryMap> contentCategories, ContentDetail contentDetail, ContentStatus contentStatus, ContentVisibility contentVisibility) {
         return Content.builder()
                 .contentId(contentId)
-                .memberId(memberId)
+                .writerId(writerId)
                 .contentHashTagMaps(contentHashTagMaps)
                 .contentCategories(contentCategories)
                 .contentDetail(contentDetail)
@@ -62,17 +64,6 @@ public class Content {
     }
 
     /**
-     * 콘텐츠 제목 및 내용 유효성 검사
-     * @param title 제목
-     * @param contentText 내용
-     */
-    public static void titleAndTextValidation(String title, String contentText) {
-        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
-
-    /**
      * ContentStatus(게시글 상태) 저장
      * @param contentStatus 저장할 게시글 상태
      */
@@ -81,14 +72,29 @@ public class Content {
     }
 
     /**
-     * 콘텐츠 제목 및 내용 저장
-     * @param contentDetail 저장할 콘텐츠 제목 및 내용
+     * ContentHashTagMaps 저장
+     * @param contentHashTagMaps contentHashTagMaps
      */
-    public void putContentDetail(ContentDetail contentDetail) {
+    public void putContentHasTagMap(List<ContentHashTagMap> contentHashTagMaps) {
+        this.contentHashTagMaps = contentHashTagMaps;
+    }
+
+    /**
+     * 콘텐츠 제목 및 내용 저장
+     * @param title 제목
+     * @param contentText 내용
+     */
+    public void putContentDetail(String title, String contentText) {
+        if (ObjectUtils.isEmpty(title) || ObjectUtils.isEmpty(contentText)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+
+        ContentDetail uypdateContentDetail = ContentDetail.of(title, contentText);
+
         if (ObjectUtils.isEmpty(contentDetail)) {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
-        this.contentDetail = contentDetail;
+        this.contentDetail = uypdateContentDetail;
     }
 
     /**
@@ -100,6 +106,16 @@ public class Content {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
         this.contentVisibility = contentVisibility;
+    }
+
+    /**
+     * 작성자 id와 memberId 비교
+     * @param memberId 비교할 memberId
+     */
+    public void writerIdValidate(MemberId memberId) {
+        if (!this.writerId.equals(memberId)) {
+            throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
+        }
     }
 }
 

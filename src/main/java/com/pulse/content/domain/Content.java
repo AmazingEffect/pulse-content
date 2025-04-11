@@ -73,18 +73,18 @@ public class Content {
     }
 
     /**
-     * ContentStatus(게시글 상태) 변경
-     * @param contentStatus - 변경할 게시글 상태
+     * ContentStatus(게시글 상태) 저장
+     * @param contentStatus 저장할 게시글 상태
      */
-    public void changeContentStatus(ContentStatus contentStatus) {
+    public void putContentStatus(ContentStatus contentStatus) {
         this.contentStatus = contentStatus;
     }
 
     /**
-     * 콘텐츠 제목 및 내용 변경
-     * @param contentDetail - 변경할 콘텐츠 제목 및 내용
+     * 콘텐츠 제목 및 내용 저장
+     * @param contentDetail 저장할 콘텐츠 제목 및 내용
      */
-    public void changeContentDetail(ContentDetail contentDetail) {
+    public void putContentDetail(ContentDetail contentDetail) {
         if (ObjectUtils.isEmpty(contentDetail)) {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
@@ -93,9 +93,9 @@ public class Content {
 
     /**
      * 콘텐츠 공개 범위 변경
-     * @param contentVisibility - 변경할 콘텐츠 공개 범위
+     * @param contentVisibility 저장할 콘텐츠 공개 범위
      */
-    public void changeContentVisibility(ContentVisibility contentVisibility) {
+    public void putContentVisibility(ContentVisibility contentVisibility) {
         if (ObjectUtils.isEmpty(contentVisibility)) {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }

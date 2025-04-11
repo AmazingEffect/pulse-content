@@ -80,7 +80,7 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // todo: 게시글
         Content content = contentMapper.createRequestDtoToDomain(createContentRequestDto);
         // 게시글 상태(ContentStatus) 세팅
-        content.changeContentStatus(ContentStatus.PUBLISHED);
+        content.putContentStatus(ContentStatus.PUBLISHED);
         // 게시글 저장
         Content createdContent = createContentPort.create(content);
 
@@ -125,12 +125,12 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         String title = updateContentRequestDTO.getTitle();
         String contentText = updateContentRequestDTO.getText();
         Content.titleAndTextValidation(title, contentText);
-        content.changeContentDetail(ContentDetail.of(title, contentText));
+        content.putContentDetail(ContentDetail.of(title, contentText));
 
         // 콘텐츠 공개 범위 변경
         ContentVisibility contentVisibility = updateContentRequestDTO.getContentVisibility();
         ContentVisibility.contentVisibilityValidation(contentVisibility);
-        content.changeContentVisibility(contentVisibility);
+        content.putContentVisibility(contentVisibility);
 
         // 콘텐츠 수정
         Content updatedContent = updateContentPort.update(content);

@@ -84,21 +84,34 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         Content content = contentMapper.createRequestDtoToDomain(createContentRequestDto);
         // 게시글 상태(ContentStatus) 세팅
         content.putContentStatus(ContentStatus.PUBLISHED);
-        // 게시글 저장
-        Content createdContent = createContentPort.create(content);
 
         // file 리스트 저장
         List<FileDTO> files = createContentRequestDto.getFiles();
-        createContentAttachments(files);
 
         // 해시태그 목록 저장
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
-        List<HashTag> existingHashTags = createHashTags(hashTagNames);
+        List<HashTag> createdHashTags = createHashTags(hashTagNames);
 
-        // 해시태그 맵 목록 저장
-        createContentHashTagMaps(existingHashTags, createdContent);
+        // 콘텐츠 및 관련 데이터 저장
+        Content createdContent = createContentInfo(content, files, createdHashTags);
 
         return contentMapper.domainToCreateResponseDTO(createdContent);
+    }
+
+    /**
+     * 게시글, 첨부파일, 콘텐츠해시태그맵 저장
+     * @param content 콘텐츠
+     * @param files 첨부파일
+     * @param hashTags 해시태그
+     * @return 저장된 게시글
+     */
+    private Content createContentInfo(Content content, List<FileDTO> files, List<HashTag> hashTags) {
+        // 게시글 저장
+        Content createdContent = createContentPort.create(content);
+        createContentAttachments(files);
+        // 해시태그 맵 목록 저장
+        createContentHashTagMaps(hashTags, createdContent);
+        return createdContent;
     }
 
     /**
@@ -172,12 +185,13 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         Content.contentValidation(content);
 
         // 작성자 아이디 유효성 검사
-        MemberId writerMemberId = content.getMemberId();
+        MemberId writerMemberId = content.getWriterId();
         MemberId deleterMemberId = deleteContentRequestDTO.getMemberId();
         Member.writerIdValidation(writerMemberId, deleterMemberId);
 
         // 1. 해시태그 및 해시태그 맵 삭제
         List<ContentHashTagMap> contentHashTagMaps = content.getContentHashTagMaps();
+        // ㅇㅣ것도 콘텐츠 도메인 안으로. this.contentHashTagMaps.stream()
         List<Long> hashTagIds = contentHashTagMaps.stream()
                         .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
                         .toList();

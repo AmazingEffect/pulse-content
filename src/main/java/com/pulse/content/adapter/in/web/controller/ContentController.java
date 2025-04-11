@@ -13,6 +13,7 @@ import com.pulse.content.application.port.in.content.DeleteContentUseCase;
 import com.pulse.content.application.port.in.content.FindContentUseCase;
 import com.pulse.content.application.port.in.content.UpdateContentUseCase;
 import com.pulse.content.domain.key.ContentId;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,9 +52,9 @@ public class ContentController {
      * @param updateContentRequestDTO 게시글 데이터
      * @return 응답 상태
      */
-    @PostMapping("/create")
+    @PostMapping("/update")
     public ApiResponse<UpdateContentResponseDTO> createContent(
-            @RequestBody UpdateContentRequestDTO updateContentRequestDTO
+            @Valid @RequestBody UpdateContentRequestDTO updateContentRequestDTO
     ) {
         UpdateContentResponseDTO updateContentResponseDTO = updateContentUseCase.update(updateContentRequestDTO);
         return ApiResponse.success(updateContentResponseDTO);

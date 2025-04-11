@@ -24,16 +24,4 @@ public class Member {
                 .profilePictureUrl(profilePictureUrl)
                 .build();
     }
-
-    /**
-     * 콘텐츠 작성자 id 유효성 검사
-     * 콘텐츠 작성자 Id 와 요청 회원 Id가 같은지 확인
-     * @param writerMemberId 콘텐츠 작성자 id
-     * @param memberId 수정 및 삭제 요청 회원 id
-     */
-    public static void writerIdValidation(MemberId writerMemberId, MemberId memberId) {
-        if (!writerMemberId.equals(memberId)) {
-            throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
-        }
-    }
 }

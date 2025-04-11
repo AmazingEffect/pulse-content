@@ -176,35 +176,39 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
      */
     @Override
     public DeleteContentResponseDTO delete(DeleteContentRequestDTO deleteContentRequestDTO) {
-        // 콘텐츠 아이디 유효성 검사
         ContentId contentId = deleteContentRequestDTO.getContentId();
-        Content.contentIdValidation(contentId);
 
         // 콘텐츠 유효성 검사
         Content content = findContentPort.findContent(contentId);
-        Content.contentValidation(content);
+        if (ObjectUtils.isEmpty(content)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
 
-        // 작성자 아이디 유효성 검사
-        MemberId writerMemberId = content.getWriterId();
-        MemberId deleterMemberId = deleteContentRequestDTO.getMemberId();
-        Member.writerIdValidation(writerMemberId, deleterMemberId);
+        // 작성자와 삭제 요청자 아이디가 동일한지 확인
+        MemberId deleterMemberId = deleteContentRequestDTO.getDeleterId();
+        content.writerIdValidate(deleterMemberId);
 
-        // 1. 해시태그 및 해시태그 맵 삭제
-        List<ContentHashTagMap> contentHashTagMaps = content.getContentHashTagMaps();
-        // ㅇㅣ것도 콘텐츠 도메인 안으로. this.contentHashTagMaps.stream()
-        List<Long> hashTagIds = contentHashTagMaps.stream()
-                        .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
-                        .toList();
+        // 해시태그 삭제
+        List<Long> hashTagIds = content.filterHashTagIds();
         deleteHashTagPort.deleteAllById(hashTagIds);
-        deleteContentHashTagMapPort.deleteAllByContentId(contentId.id());
 
-        // file 삭제
-        deleteContentAttachmentPort.deleteAllByContentId(contentId.id());
-
-        // 콘텐츠 삭제
-        deleteContentPort.deleteById(contentId.id());
+        // 콘텐츠, 첨부파일, 맵 삭제
+        deleteContentInfo(contentId.id());
 
         return contentMapper.domainToDeleteResponseDTO(content);
+    }
+
+    /**
+     * 콘텐츠 및 관련 정보 삭제
+     * @param contentId 콘텐츠 아이디
+     */
+    private void deleteContentInfo(Long contentId) {
+        // ContentHashTagMap 삭제
+        deleteContentHashTagMapPort.deleteAllByContentId(contentId);
+        // file 삭제
+        deleteContentAttachmentPort.deleteAllByContentId(contentId);
+        // 콘텐츠 삭제
+        deleteContentPort.deleteById(contentId);
     }
 
     /**

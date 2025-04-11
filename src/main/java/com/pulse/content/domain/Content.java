@@ -44,26 +44,6 @@ public class Content {
     }
 
     /**
-     * 콘텐츠 유효성 검사
-     * @param content 콘텐츠
-     */
-    public static void contentValidation(Content content) {
-        if (ObjectUtils.isEmpty(content)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
-
-    /**
-     * 콘텐츠 Id 유효성 검사
-     * @param contentId 콘텐츠 id
-     */
-    public static void contentIdValidation(ContentId contentId) {
-        if (ObjectUtils.isEmpty(contentId) || ObjectUtils.isEmpty(contentId.id())) {
-            throw new ContentException(ErrorCode.CONTENT_ID_REQUIRED);
-        }
-    }
-
-    /**
      * ContentStatus(게시글 상태) 저장
      * @param contentStatus 저장할 게시글 상태
      */
@@ -116,6 +96,16 @@ public class Content {
         if (!this.writerId.equals(memberId)) {
             throw new ContentException(ErrorCode.HANDLE_ACCESS_DENIED);
         }
+    }
+
+    /**
+     * 해시태그 아이디 목록 추출
+     * @return 해시태그 아이디 목록
+     */
+    public List<Long> filterHashTagIds() {
+         return this.contentHashTagMaps.stream()
+                .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
+                .toList();
     }
 }
 

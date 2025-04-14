@@ -69,12 +69,12 @@ public class Content {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
 
-        ContentDetail uypdateContentDetail = ContentDetail.of(title, contentText);
+        ContentDetail updateContentDetail = ContentDetail.of(title, contentText);
 
         if (ObjectUtils.isEmpty(contentDetail)) {
             throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
         }
-        this.contentDetail = uypdateContentDetail;
+        this.contentDetail = updateContentDetail;
     }
 
     /**

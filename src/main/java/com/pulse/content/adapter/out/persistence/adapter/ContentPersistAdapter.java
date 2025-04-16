@@ -20,12 +20,16 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @PersistenceAdapter
 public class ContentPersistAdapter implements CreateContentPort, FindContentPort, UpdateContentPort, DeleteContentPort {
 
+    private final ContentHashTagMapRepository contentHashTagMapRepository;
     private final ContentRepository contentRepository;
+
+    private final ContentHashTagMapMapper contentHashTagMapMapper;
     private final ContentMapper contentMapper;
     private final ContentHashTagMapRepository contentHashTagMapRepository;
     private final ContentHashTagMapMapper contentHashTagMapMapper;
@@ -61,6 +65,23 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
         }
 
         return content;
+      
+        List<ContentHashTagMapEntity> contentHashTagMapEntities = contentHashTagMapRepository.findAllByContentEntity_ContentId(contentId.id());
+
+        // contentHashTagMap 도메인으로 변환
+        List<ContentHashTagMap> contentHashTagMap = contentHashTagMapEntities.stream()
+                .map(contentHashTagMapMapper::entityToDomain)
+                .collect(Collectors.toList());
+
+        // 해시태그명만 추출
+        List<String> hashTags = contentHashTagMap.stream()
+                .map(hashtagMap -> hashtagMap.getHashTag().getName())
+                .collect(Collectors.toList());
+
+        // content에 hashtag를 넣어주기 위해 custom mapper method 호출
+        return contentEntity
+                .map(entity -> contentMapper.entityToDomain(entity, hashTags, contentHashTagMap))
+                .orElse(null);
     }
 
     /**

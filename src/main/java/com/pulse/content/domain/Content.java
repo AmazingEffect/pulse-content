@@ -26,6 +26,12 @@ public class Content {
     private List<ContentHashTagMap> contentHashTagMaps;
     private List<ContentCategoryMap> contentCategories;
     private List<ContentAttachment> contentAttachments;
+
+    private MemberId memberId;
+    private List<String> hashTags;
+    private List<ContentHashTagMap> contentHashTagMaps; // TODO map 지우기
+    private List<ContentCategoryMap> contentCategories; // TODO map 지우기
+
     private ContentDetail contentDetail;
     private ContentStatus contentStatus;
     private ContentVisibility contentVisibility;
@@ -35,6 +41,12 @@ public class Content {
         return Content.builder()
                 .contentId(contentId)
                 .writerId(writerId)
+          
+    public static Content of(ContentId contentId, MemberId memberId, List<String> hashTags, List<ContentHashTagMap> contentHashTagMaps, List<ContentCategoryMap> contentCategories, ContentDetail contentDetail, ContentStatus contentStatus, ContentVisibility contentVisibility) {
+        return Content.builder()
+                .contentId(contentId)
+                .memberId(memberId)
+                .hashTags(hashTags)
                 .contentHashTagMaps(contentHashTagMaps)
                 .contentCategories(contentCategories)
                 .contentDetail(contentDetail)

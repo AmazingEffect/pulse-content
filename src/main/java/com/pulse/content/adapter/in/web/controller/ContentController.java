@@ -28,10 +28,15 @@ public class ContentController {
     private final UpdateContentUseCase updateContentUseCase;
     private final DeleteContentUseCase deleteContentUseCase;
 
-    @GetMapping("/find/contents/{contentId}")
-    public ResponseEntity<ApiResponse<FindContentResponseDTO>> findContent(@PathVariable ContentId contentId) {
+    /**
+     * @apiNote 게시글 단건 조회
+     * @param contentId
+     * @return
+     */
+    @GetMapping("/{contentId}")
+    public ApiResponse<FindContentResponseDTO> findContent(@PathVariable ContentId contentId) {
         FindContentResponseDTO content = findContentUseCase.findContent(contentId);
-        return ResponseEntity.ok(ApiResponse.success(content));
+        return ApiResponse.success(content);
     }
 
     /**

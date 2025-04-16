@@ -25,14 +25,4 @@ public class ContentHashTagMap {
                 .hashTag(hashTag)
                 .build();
     }
-
-    /**
-     * 콘텐츠해시태그맵 유효성 검사
-     * @param contentHashTagMaps 콘텐츠해시태그맵
-     */
-    public static void contentHashTagMapValidation(List<ContentHashTagMap> contentHashTagMaps) {
-        if (ObjectUtils.isEmpty(contentHashTagMaps)) {
-            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
-        }
-    }
 }

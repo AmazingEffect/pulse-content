@@ -4,6 +4,10 @@ import com.pulse.content.adapter.in.web.dto.FileDTO;
 import com.pulse.content.common.enumerate.ContentVisibility;
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.key.MemberId;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -14,9 +18,13 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UpdateContentRequestDTO {
 
+    @Valid
+    @NotNull
     private ContentId contentId;                // 콘텐츠 id
+    @Valid
+    @NotNull
     private MemberId memberId;                  // 작성자 id
-    private List<String> hashTagNames;          // hashTag 목록
+    private List<String> hashTagNames;         // hashTag 목록
     private List<FileDTO> files;               // 첨부 파일 목록
     private String title;                       // 게시글 제목
     private String text;                        // 게시글 내용

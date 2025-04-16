@@ -35,9 +35,12 @@ import com.pulse.content.domain.key.*;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.domain.vo.ContentAttachment;
 import com.pulse.content.domain.vo.ContentDetail;
+import com.pulse.content.exception.ContentException;
+import com.pulse.content.exception.ErrorCode;
 import com.pulse.content.mapper.ContentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,22 +83,35 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
         // todo: 게시글
         Content content = contentMapper.createRequestDtoToDomain(createContentRequestDto);
         // 게시글 상태(ContentStatus) 세팅
-        content.changeContentStatus(ContentStatus.PUBLISHED);
-        // 게시글 저장
-        Content createdContent = createContentPort.create(content);
+        content.putContentStatus(ContentStatus.PUBLISHED);
 
         // file 리스트 저장
         List<FileDTO> files = createContentRequestDto.getFiles();
-        createContentAttachments(files);
 
         // 해시태그 목록 저장
         List<String> hashTagNames = createContentRequestDto.getHashTagNames();
-        List<HashTag> existingHashTags = createHashTags(hashTagNames);
+        List<HashTag> createdHashTags = createHashTags(hashTagNames);
 
-        // 해시태그 맵 목록 저장
-        createContentHashTagMaps(existingHashTags, createdContent);
+        // 콘텐츠 및 관련 데이터 저장
+        Content createdContent = createContentInfo(content, files, createdHashTags);
 
         return contentMapper.domainToCreateResponseDTO(createdContent);
+    }
+
+    /**
+     * 게시글, 첨부파일, 콘텐츠해시태그맵 저장
+     * @param content 콘텐츠
+     * @param files 첨부파일
+     * @param hashTags 해시태그
+     * @return 저장된 게시글
+     */
+    private Content createContentInfo(Content content, List<FileDTO> files, List<HashTag> hashTags) {
+        // 게시글 저장
+        Content createdContent = createContentPort.create(content);
+        createContentAttachments(files);
+        // 해시태그 맵 목록 저장
+        createContentHashTagMaps(hashTags, createdContent);
+        return createdContent;
     }
 
     /**
@@ -110,27 +126,25 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
     @Override
     public UpdateContentResponseDTO update(UpdateContentRequestDTO updateContentRequestDTO) {
         ContentId contentId = updateContentRequestDTO.getContentId();
-        Content.contentIdValidation(contentId);
 
         // 콘텐츠 조회
         Content content = findContentPort.findContent(contentId);
-        Content.contentValidation(content);
+        if (ObjectUtils.isEmpty(content)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
 
         // 작성자와 수정자 아이디 비교
-        MemberId writerMemberId = content.getMemberId();
-        MemberId updateMemberId = updateContentRequestDTO.getMemberId();
-        Member.writerIdValidation(writerMemberId, updateMemberId);
+        MemberId updaterMemberId = updateContentRequestDTO.getMemberId();
+        content.writerIdValidate(updaterMemberId);
 
         // 콘텐츠 제목 및 내용 변경
         String title = updateContentRequestDTO.getTitle();
         String contentText = updateContentRequestDTO.getText();
-        Content.titleAndTextValidation(title, contentText);
-        content.changeContentDetail(ContentDetail.of(title, contentText));
+        content.putContentDetail(title, contentText);
 
         // 콘텐츠 공개 범위 변경
         ContentVisibility contentVisibility = updateContentRequestDTO.getContentVisibility();
-        ContentVisibility.contentVisibilityValidation(contentVisibility);
-        content.changeContentVisibility(contentVisibility);
+        content.putContentVisibility(contentVisibility);
 
         // 콘텐츠 수정
         Content updatedContent = updateContentPort.update(content);
@@ -139,11 +153,12 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
 
         // 해시태그 및 해시태그 맵
         List<String> hashTagNames = updateContentRequestDTO.getHashTagNames();
-        List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
-        ContentHashTagMap.contentHashTagMapValidation(contentHashTagMaps);
+        List<ContentHashTagMap> contentHashTagMaps = content.getContentHashTagMaps();
 
-        // 해시태그 맵 삭제
-        deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
+        if (!ObjectUtils.isEmpty(contentHashTagMaps)) {
+            // 수정한 해시태그 목록에 없는 해시태그맵 삭제
+            deleteAllContentHashTagMap(contentHashTagMaps, hashTagNames);
+        }
 
         // 수정한 해시태그 목록 중 신규 해시태그 등록
         createContentHashTagMap(contentHashTagMaps, hashTagNames, updatedContent);
@@ -161,34 +176,39 @@ public class ContentService implements CreateContentsUseCase, FindContentUseCase
      */
     @Override
     public DeleteContentResponseDTO delete(DeleteContentRequestDTO deleteContentRequestDTO) {
-        // 콘텐츠 아이디 유효성 검사
         ContentId contentId = deleteContentRequestDTO.getContentId();
-        Content.contentIdValidation(contentId);
 
         // 콘텐츠 유효성 검사
         Content content = findContentPort.findContent(contentId);
-        Content.contentValidation(content);
+        if (ObjectUtils.isEmpty(content)) {
+            throw new ContentException(ErrorCode.ENTITY_NOT_FOUND);
+        }
 
-        // 작성자 아이디 유효성 검사
-        MemberId writerMemberId = content.getMemberId();
-        MemberId deleterMemberId = deleteContentRequestDTO.getMemberId();
-        Member.writerIdValidation(writerMemberId, deleterMemberId);
+        // 작성자와 삭제 요청자 아이디가 동일한지 확인
+        MemberId deleterMemberId = deleteContentRequestDTO.getDeleterId();
+        content.writerIdValidate(deleterMemberId);
 
-        // 1. 해시태그 및 해시태그 맵 삭제
-        List<ContentHashTagMap> contentHashTagMaps = findContentHashTagMapPort.findByContentId(contentId.id());
-        List<Long> hashTagIds = contentHashTagMaps.stream()
-                        .map(contentHashTagMap -> contentHashTagMap.getHashTag().getHashTagId().id())
-                        .toList();
+        // 해시태그 삭제
+        List<Long> hashTagIds = content.filterHashTagIds();
         deleteHashTagPort.deleteAllById(hashTagIds);
-        deleteContentHashTagMapPort.deleteAllByContentId(contentId.id());
 
-        // file 삭제
-        deleteContentAttachmentPort.deleteAllByContentId(contentId.id());
-
-        // 콘텐츠 삭제
-        deleteContentPort.deleteById(contentId.id());
+        // 콘텐츠, 첨부파일, 맵 삭제
+        deleteContentInfo(contentId.id());
 
         return contentMapper.domainToDeleteResponseDTO(content);
+    }
+
+    /**
+     * 콘텐츠 및 관련 정보 삭제
+     * @param contentId 콘텐츠 아이디
+     */
+    private void deleteContentInfo(Long contentId) {
+        // ContentHashTagMap 삭제
+        deleteContentHashTagMapPort.deleteAllByContentId(contentId);
+        // file 삭제
+        deleteContentAttachmentPort.deleteAllByContentId(contentId);
+        // 콘텐츠 삭제
+        deleteContentPort.deleteById(contentId);
     }
 
     /**

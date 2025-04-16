@@ -2,6 +2,8 @@ package com.pulse.content.adapter.in.web.dto.request;
 
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.key.MemberId;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -10,6 +12,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeleteContentRequestDTO {
 
-    private MemberId memberId;
-    private ContentId contentId;
+    @Valid
+    @NotNull
+    private MemberId deleterId;     // 콘텐츠 삭제 요청자 id
+    @Valid
+    @NotNull
+    private ContentId contentId;    // 삭제할 콘텐츠 Id
 }

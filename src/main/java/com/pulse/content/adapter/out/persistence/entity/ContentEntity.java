@@ -21,8 +21,8 @@ public class ContentEntity extends BaseEntity{
     @Column(name = "content_id")
     private Long contentId;
 
-    @Column(name = "member_id")
-    private Long memberId;
+    @Column(name = "writer_id")
+    private Long writerId;
 
     // 콘텐츠(vo)
     @Column(name = "title")

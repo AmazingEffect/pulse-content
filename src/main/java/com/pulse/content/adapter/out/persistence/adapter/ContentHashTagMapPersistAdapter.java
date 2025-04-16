@@ -6,6 +6,7 @@ import com.pulse.content.application.port.out.map.CreateContentHashTagMapPort;
 import com.pulse.content.application.port.out.map.DeleteContentHashTagMapPort;
 import com.pulse.content.application.port.out.map.FindContentHashTagMapPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
+import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentHashTagMapMapper;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,7 @@ public class ContentHashTagMapPersistAdapter implements CreateContentHashTagMapP
                 .map(contentHashTagMapMapper::entityToDomain)
                 .collect(Collectors.toList());
     }
+
 
     /**
      * ContentHashTagMapId 리스트에 해당하는 ContentHashTagMap 전부 삭제

@@ -11,6 +11,7 @@ import com.pulse.content.application.port.out.content.FindContentPort;
 import com.pulse.content.application.port.out.content.UpdateContentPort;
 import com.pulse.content.common.annotation.PersistenceAdapter;
 import com.pulse.content.domain.Content;
+import com.pulse.content.domain.HashTag;
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.map.ContentHashTagMap;
 import com.pulse.content.mapper.ContentHashTagMapMapper;
@@ -31,8 +32,6 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
 
     private final ContentHashTagMapMapper contentHashTagMapMapper;
     private final ContentMapper contentMapper;
-    private final ContentHashTagMapRepository contentHashTagMapRepository;
-    private final ContentHashTagMapMapper contentHashTagMapMapper;
 
     /**
      * 게시글 저장
@@ -58,15 +57,10 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
         Optional<ContentEntity> contentEntity = contentRepository.findById(contentId.id());
         Content content = contentEntity.map(contentMapper::entityToDomain).orElse(null);
 
-        if (!ObjectUtils.isEmpty(content)) {
-            List<ContentHashTagMapEntity> contentHashTagMapEntities = contentHashTagMapRepository.findAllByContentEntity_ContentId(contentId.id());
-            List<ContentHashTagMap> contentHashTagMaps = contentHashTagMapEntities.stream().map(contentHashTagMapMapper::entityToDomain).toList();
-            content.putContentHasTagMap(contentHashTagMaps);
-        }
-
-        return content;
-      
         List<ContentHashTagMapEntity> contentHashTagMapEntities = contentHashTagMapRepository.findAllByContentEntity_ContentId(contentId.id());
+        List<ContentHashTagMap> contentHashTagMaps = contentHashTagMapEntities.stream().map(contentHashTagMapMapper::entityToDomain).toList();
+        content.putContentHasTagMap(contentHashTagMaps);
+
 
         // contentHashTagMap 도메인으로 변환
         List<ContentHashTagMap> contentHashTagMap = contentHashTagMapEntities.stream()
@@ -74,13 +68,13 @@ public class ContentPersistAdapter implements CreateContentPort, FindContentPort
                 .collect(Collectors.toList());
 
         // 해시태그명만 추출
-        List<String> hashTags = contentHashTagMap.stream()
-                .map(hashtagMap -> hashtagMap.getHashTag().getName())
+        List<HashTag> hashTags = contentHashTagMap.stream()
+                .map(ContentHashTagMap::getHashTag)
                 .collect(Collectors.toList());
 
         // content에 hashtag를 넣어주기 위해 custom mapper method 호출
         return contentEntity
-                .map(entity -> contentMapper.entityToDomain(entity, hashTags, contentHashTagMap))
+                .map(entity -> contentMapper.entityToDomain(entity, hashTags))
                 .orElse(null);
     }
 

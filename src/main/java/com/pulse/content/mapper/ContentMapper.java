@@ -7,6 +7,7 @@ import com.pulse.content.adapter.in.web.dto.response.FindContentResponseDTO;
 import com.pulse.content.adapter.in.web.dto.response.UpdateContentResponseDTO;
 import com.pulse.content.adapter.out.persistence.entity.ContentEntity;
 import com.pulse.content.domain.Content;
+import com.pulse.content.domain.HashTag;
 import com.pulse.content.domain.key.ContentId;
 import com.pulse.content.domain.key.MemberId;
 import com.pulse.content.domain.map.ContentHashTagMap;
@@ -48,14 +49,12 @@ public interface ContentMapper {
 
     DeleteContentResponseDTO domainToDeleteResponseDTO(Content deletedContent);
 
-    // ContentEntity + hashTags + contentHashTagMaps로 Content 도메인을 만들어주는 커스텀 메서드
-    default Content entityToDomain(ContentEntity entity, List<String> hashTags, List<ContentHashTagMap> contentHashTagMaps) {
+    // ContentEntity + hashTags Content 도메인을 만들어주는 커스텀 메서드
+    default Content entityToDomain(ContentEntity entity, List<HashTag> hashTags) {
         return Content.of(
                 new ContentId(entity.getContentId()),
-                new MemberId(entity.getMemberId()),
+                new MemberId(entity.getWriterId()),
                 hashTags,
-                contentHashTagMaps,
-                null, // contentCategories는 현재 로직에서 필요 없으면 null
                 ContentDetail.of(entity.getTitle(), entity.getText()),
                 entity.getContentStatus(),
                 entity.getContentVisibility()
